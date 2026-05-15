@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZetaFin — Controle financeiro inteligente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#0a0a0a;color:#fff;overflow-x:hidden}
+:root{--g:#22c55e;--br:rgba(255,255,255,.08);--mu:rgba(255,255,255,.42);--mi:rgba(255,255,255,.7);--s1:#141414;--s2:#1a1a1a}
+
+/* ── NAV ── */
+nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:200;width:min(1100px,calc(100% - 32px));display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:rgba(8,8,8,.88);backdrop-filter:blur(24px);border-radius:100px;border:1px solid rgba(255,255,255,.08)}
+nav::after{content:'';position:absolute;inset:-1px;border-radius:100px;background:linear-gradient(90deg,transparent 0%,rgba(34,197,94,0) 20%,rgba(34,197,94,.8) 50%,rgba(34,197,94,0) 80%,transparent 100%);background-size:200% 100%;animation:navLed 3s linear infinite;pointer-events:none;z-index:-1;padding:1px;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+@keyframes navLed{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.nl{display:flex;align-items:center;gap:9px;text-decoration:none;font-size:1rem;font-weight:700;color:#fff}
+.lb{width:30px;height:30px;background:var(--g);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.9rem;color:#0a0a0a}
+.nm{display:flex;gap:26px;list-style:none}
+.nm a{text-decoration:none;color:var(--mu);font-size:.84rem;font-weight:500;transition:color .2s}
+.nm a:hover{color:#fff}
+.nr{display:flex;gap:8px}
+.bng{padding:8px 18px;border-radius:100px;border:1px solid var(--br);background:transparent;color:#fff;font-family:inherit;font-size:.82rem;font-weight:500;cursor:pointer;text-decoration:none;transition:border-color .2s}
+.bng:hover{border-color:rgba(255,255,255,.28)}
+.bnw{padding:8px 20px;border-radius:100px;background:#fff;color:#0a0a0a;border:none;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;text-decoration:none;transition:background .2s}
+.bnw:hover{background:#e5e5e5}
+
+/* ── HERO — wide retangular ── */
+/* ── HERO — mobile-first ── */
+.hero{
+  min-height:100vh;
+  display:grid;grid-template-columns:46% 54%;
+  align-items:center;gap:0;
+  padding:108px 5% 80px 6%;
+  position:relative;overflow:visible;
+}
+.hero-glow{position:absolute;top:-100px;right:0;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.05) 0%,transparent 65%);pointer-events:none}
+.hero-left{padding-right:4%}
+.hero-pill{display:none}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--g);animation:blink 2.5s infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.6)}}
+.hero-h1{font-size:clamp(2.6rem,4.2vw,4.4rem);font-weight:800;line-height:1.06;letter-spacing:-2px}
+.hero-h1 .g{color:var(--g)}
+.hero-p{margin-top:16px;font-size:.95rem;color:var(--mu);line-height:1.7;max-width:390px;font-weight:400}
+.hero-btns{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap;align-items:center}
+.bw{padding:13px 28px;border-radius:100px;background:#fff;color:#0a0a0a;border:none;font-family:inherit;font-size:.92rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s}
+.bw:hover{background:#e5e5e5;transform:translateY(-1px)}
+.bo{padding:13px 28px;border-radius:100px;background:transparent;color:#fff;font-family:inherit;font-size:.92rem;font-weight:500;cursor:pointer;text-decoration:none;border:1px solid var(--br);transition:all .2s}
+.bo:hover{border-color:rgba(255,255,255,.3);transform:translateY(-1px)}
+.hero-stats{display:flex;gap:24px;flex-wrap:wrap;margin-top:36px;padding-top:28px;border-top:1px solid var(--br)}
+.hs-num{font-size:1.4rem;font-weight:800;letter-spacing:-1px;color:#fff}
+.hs-num .g{color:var(--g)}
+.hs-lbl{font-size:.68rem;color:var(--mu);margin-top:1px}
+
+/* ── HERO RIGHT ── */
+.hero-right{
+  position:relative;
+  height:100%;display:flex;align-items:center;
+  padding:20px 0;
+}
+
+/* foto hero */
+.hero-photo{
+  width:90%;
+  aspect-ratio:3/4;
+  max-height:580px;
+  border-radius:20px;
+  overflow:hidden;position:relative;flex-shrink:0;
+}
+.hero-photo img{
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center 22%;
+  filter:brightness(.78);display:block;
+}
+.hero-photo::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 42%,rgba(4,4,4,.9) 100%);
+}
+
+/* badge oculto conforme solicitado */
+.hero-badge{display:none!important}
+
+/* ── card de saldo — MENOR e mais compacto, dentro da foto rodapé ── */
+.hero-bal{
+  position:absolute;
+  /* não vai até as bordas — fica contido dentro da foto */
+  bottom:14px;right:14px;left:auto;width:220px;
+  z-index:30;
+  background:rgba(6,6,6,.62);backdrop-filter:blur(20px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.12);border-radius:12px;
+  padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center;
+  animation:balPulse 8s ease-in-out infinite;
+}
+@keyframes balPulse{
+  0%{transform:translateY(0);box-shadow:0 4px 20px rgba(0,0,0,.4),0 0 0 0 rgba(34,197,94,.0)}
+  40%{transform:translateY(-5px);box-shadow:0 10px 32px rgba(0,0,0,.55),0 0 18px 2px rgba(34,197,94,.1)}
+  70%{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 10px 1px rgba(34,197,94,.08)}
+  100%{transform:translateY(0);box-shadow:0 4px 20px rgba(0,0,0,.4),0 0 0 0 rgba(34,197,94,.0)}
+}
+.hb-lbl{font-size:.52rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.38);margin-bottom:3px}
+.hb-amount{font-size:1rem;font-weight:900;color:var(--g);letter-spacing:-.5px}
+.hb-chg{display:inline-flex;align-items:center;gap:3px;margin-top:4px;font-size:.58rem;font-weight:700;color:var(--g);background:rgba(34,197,94,.12);padding:2px 7px;border-radius:100px}
+.hb-right{text-align:right}
+.hb-slbl{font-size:.52rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.32);margin-bottom:3px}
+.hb-score{font-size:.88rem;font-weight:900;color:#fff}
+.hb-ssub{font-size:.55rem;color:rgba(255,255,255,.28);margin-top:1px}
+
+/* ── stack de transações — DENTRO da foto, lado direito interno ── */
+.tx-stack{
+  position:absolute;
+  top:50%;transform:translateY(-52%);
+  /* dentro da foto — alinhado com a borda direita interna */
+  right:10px;
+  display:flex;flex-direction:column;gap:7px;
+  z-index:40;
+}
+/* cada card entra com animação de slide + float */
+.txc{
+  display:flex;align-items:center;gap:9px;
+  background:rgba(10,10,10,.8);
+  backdrop-filter:blur(20px) saturate(1.6);
+  border:1px solid rgba(255,255,255,.15);border-radius:14px;
+  padding:11px 16px 11px 10px;width:230px;
+  box-shadow:0 4px 18px rgba(0,0,0,.45);
+  transform:translateX(20px);opacity:0;
+  animation:slideIn .5s ease forwards, txFloat var(--dur,6s) var(--del,0s) ease-in-out infinite;
+}
+.txc:nth-child(1){--dur:6s;--del:0s;animation-delay:0s,0s;animation:slideIn .5s .1s ease forwards,txFloat1 6s 0s ease-in-out infinite}
+.txc:nth-child(2){--dur:7s;animation:slideIn .5s .25s ease forwards,txFloat2 7s -2s ease-in-out infinite}
+.txc:nth-child(3){animation:slideIn .6s .33s cubic-bezier(.34,1.4,.64,1) forwards,txFloat3 7s -3s ease-in-out infinite}
+.txc:nth-child(4){animation:slideIn .6s .46s cubic-bezier(.34,1.4,.64,1) forwards,txFloat2 5.5s -4s ease-in-out infinite}
+
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(20px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes txFloat1{
+  0%,100%{transform:translateY(0) scale(1)}
+  25%{transform:translateY(-6px) scale(1.01)}
+  75%{transform:translateY(3px) scale(.99)}
+}
+@keyframes txFloat2{
+  0%,100%{transform:translateY(0)}
+  30%{transform:translateY(5px)}
+  70%{transform:translateY(-4px)}
+}
+@keyframes txFloat3{
+  0%,100%{transform:translateY(0)}
+  40%{transform:translateY(-7px)}
+  80%{transform:translateY(3px)}
+}
+
+/* hover nos cards — leve destaque */
+.txc:hover{
+  background:rgba(20,20,20,.92);
+  border-color:rgba(255,255,255,.2);
+  transform:translateX(-3px) !important;
+  transition:all .25s ease;
+}
+
+/* ícone app sem distorção */
+.aico{width:38px;height:38px;border-radius:10px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.aico img{width:100%;height:100%;object-fit:contain;border-radius:8px}
+.tx-d{flex:1;min-width:0}
+.tx-n{font-size:.86rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-s{font-size:.7rem;color:rgba(255,255,255,.38);margin-top:3px;white-space:nowrap}
+.tx-v{font-size:.92rem;font-weight:800;white-space:nowrap;flex-shrink:0;margin-left:10px}
+.neg{color:#fb7185}.pos{color:var(--g)}
+
+
+/* ocultar elementos antigos da marquee */
+
+
+
+
+/* ── FUNCIONALIDADES com ícones SVG reais ── */
+.func-sec{padding:96px 6% 80px;background:#0d0d0d;border-top:1px solid rgba(255,255,255,.06)}
+.sec-tag{display:inline-block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.22);color:var(--g);font-size:.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 13px;border-radius:100px;margin-bottom:14px}
+.sec-h2{font-size:clamp(1.9rem,4vw,3rem);font-weight:800;line-height:1.08;letter-spacing:-1.2px}
+.sec-h2 .g{color:var(--g)}
+.sec-p{font-size:.95rem;color:var(--mu);line-height:1.75;max-width:480px;margin-top:12px}
+
+/* ── DASHBOARD MOCKUP ── */
+.dash-wrap{border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;background:#0d0d0d;box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 1px rgba(34,197,94,.06)}
+.dash-topbar{display:flex;justify-content:space-between;align-items:center;padding:11px 18px;border-bottom:1px solid rgba(255,255,255,.06);background:#0a0a0a}
+.dash-topbar-left{display:flex;align-items:center;gap:10px}
+.dash-sep{width:1px;height:14px;background:rgba(255,255,255,.1)}
+.dash-topbar-right{display:flex;align-items:center;gap:8px}
+.dash-limit-pill{display:flex;align-items:center;gap:6px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.16);padding:4px 12px;border-radius:100px;font-size:.65rem;color:rgba(255,255,255,.4)}
+.dash-limit-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 2s infinite;flex-shrink:0}
+.dash-alert-badge{width:26px;height:26px;border-radius:50%;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.22);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#f87171}
+.dash-avatar-sm{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;color:#0a0a0a}
+.dash-tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.06);padding:0 18px;background:#0a0a0a}
+.dash-tab{padding:9px 14px;font-size:.7rem;font-weight:500;color:rgba(255,255,255,.28);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;white-space:nowrap}
+.dash-tab.active{color:#22c55e;border-bottom-color:#22c55e;font-weight:600}
+.dash-tab:hover:not(.active){color:rgba(255,255,255,.55)}
+.dash-body{padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.dash-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.dash-kpi{padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.dash-kpi.feat{border-color:rgba(34,197,94,.15);background:rgba(34,197,94,.04)}
+.dash-kpi-lbl{font-size:.56rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.28);margin-bottom:5px}
+.dash-kpi-val{font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:3px}
+.dash-kpi-val.g{color:#22c55e}
+.dash-kpi-chg{font-size:.58rem;font-weight:600}
+.dash-kpi-chg.up{color:rgba(34,197,94,.65)}
+.dash-kpi-chg.down{color:rgba(251,113,133,.65)}
+.dash-panels{display:flex;gap:12px}
+.dash-panel{flex:1;padding:14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;gap:10px}
+.dash-panel-title{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.55)}
+.dash-spark{display:flex;flex-direction:column;gap:4px}
+.dash-spark-labels{display:flex;justify-content:space-between;padding:0 2px}
+.dash-spark-labels span{font-size:.55rem;color:rgba(255,255,255,.22)}
+.dash-cats{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.dash-cat{display:flex;align-items:center;gap:5px;font-size:.62rem;color:rgba(255,255,255,.38)}
+.dash-cat-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dash-cat-val{margin-left:auto;font-weight:600;color:rgba(255,255,255,.55);font-size:.6rem}
+.dash-tx-list{display:flex;flex-direction:column}
+.dash-tx-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.dash-tx-row:last-child{border-bottom:none;padding-bottom:0}
+.dash-tx-ico{width:26px;height:26px;border-radius:7px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.dash-tx-info{flex:1;min-width:0}
+.dash-tx-name{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-tx-date{font-size:.57rem;color:rgba(255,255,255,.22);margin-top:1px}
+.dash-tx-val{font-size:.7rem;font-weight:700;flex-shrink:0}
+.dash-tx-val.neg{color:#fb7185}
+.dash-tx-val.pos{color:#22c55e}
+
+/* ── SEÇÕES PIERRE — mais quadradas ── */
+.pr{padding:88px 6%;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.pr.rev{direction:rtl}.pr.rev>*{direction:ltr}
+.pr-h{font-size:clamp(1.9rem,3.2vw,2.8rem);font-weight:800;line-height:1.1;letter-spacing:-1.2px;color:#fff;margin-bottom:14px}
+.pr-h .g{color:var(--g)}
+.pr-p{font-size:.92rem;color:var(--mu);line-height:1.75;max-width:360px;margin-bottom:28px}
+.pr-btn{display:inline-flex;align-items:center;padding:13px 26px;border-radius:100px;background:#fff;color:#0a0a0a;font-family:inherit;font-size:.88rem;font-weight:700;border:none;cursor:pointer;text-decoration:none;transition:background .2s}
+.pr-btn:hover{background:#e5e5e5}
+
+/* fotos Pierre — quadradas 1:1 exato */
+.pr-vis{position:relative;display:flex;align-items:center;justify-content:center}
+.pr-photo{
+  width:100%;
+  aspect-ratio:1/1;
+  max-height:440px;
+  border-radius:20px;overflow:hidden;position:relative;flex-shrink:0;
+}
+.pr-photo img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:center 25%;
+  display:block;filter:brightness(.75);
+}
+.pr-photo::after{content:'';position:absolute;inset:0;background:rgba(4,4,4,.1)}
+
+/* UI flutuante — translúcido, DENTRO da foto sobrepondo */
+.pr-ui{
+  position:absolute;z-index:10;
+  background:rgba(8,8,8,.72);
+  backdrop-filter:blur(24px) saturate(1.8);
+  border:1px solid rgba(255,255,255,.12);border-radius:18px;
+  box-shadow:0 12px 40px rgba(0,0,0,.55);
+  animation:flt 7s ease-in-out infinite;
+}
+/* meio dentro / meio fora — borda da foto */
+.pr-ui.left{left:-18px;bottom:32px;top:auto;transform:none}
+.pr-ui.right{right:-18px;bottom:32px;top:auto;transform:none}
+
+/* ── UI lista categorias — ícones sem distorção ── */
+.ui-cat{padding:16px 18px;min-width:276px}
+.ui-head{font-size:.58rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.3);font-weight:700;margin-bottom:4px}
+.ui-total{font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:-.5px;margin-bottom:12px}
+.ui-bar-row{display:flex;gap:3px;margin-bottom:14px}
+.ui-seg{height:6px;border-radius:100px}
+.ui-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,.06)}
+/* ícone da categoria — quadrado fixo, object-fit:contain */
+.ui-ico{
+  width:28px;height:28px;border-radius:8px;flex-shrink:0;
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+}
+.ui-ico img{
+  width:100%;height:100%;
+  object-fit:contain;   /* sem distorção */
+  border-radius:7px;
+}
+.ui-name{font-size:.8rem;font-weight:600;color:rgba(255,255,255,.85);flex:1}
+.ui-pct{font-size:.68rem;color:rgba(255,255,255,.3);margin-right:4px}
+.ui-val{font-size:.8rem;font-weight:700;color:#fff}
+
+/* ── UI assinaturas — ícones quadrados sem distorção ── */
+.ui-subs{padding:16px 18px;min-width:296px}
+.sub-grid{display:flex;gap:10px;margin-top:14px}
+.sub-c{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:14px 10px;text-align:center}
+.sub-ico{
+  width:44px;height:44px;border-radius:12px;
+  margin:0 auto 8px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.sub-ico img{
+  width:100%;height:100%;
+  object-fit:contain;   /* preserva aspect-ratio das logos */
+  border-radius:12px;
+}
+.sub-name{font-size:.72rem;font-weight:600;color:rgba(255,255,255,.65);margin-bottom:4px}
+.sub-val{font-size:.92rem;font-weight:800;color:#fff}
+.sub-days{font-size:.57rem;color:rgba(255,255,255,.3);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── UI metas ── */
+.ui-metas{padding:16px 20px;min-width:270px}
+.meta-row{margin-bottom:12px}
+.meta-row:last-child{margin-bottom:0}
+.meta-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.meta-name{font-size:.77rem;font-weight:700;color:#fff}
+.meta-pct{font-size:.73rem;font-weight:800}
+.meta-bar{height:5px;background:rgba(255,255,255,.08);border-radius:100px;overflow:hidden}
+.meta-fill{height:100%;border-radius:100px}
+.meta-bot{display:flex;justify-content:space-between;margin-top:4px}
+.meta-bot span{font-size:.59rem;color:rgba(255,255,255,.26)}
+
+
+
+/* ── PRICING ── */
+.pricing{padding:96px 6%;text-align:center;position:relative;overflow:hidden}
+.pricing::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(34,197,94,.04) 0%,transparent 60%);pointer-events:none}
+.bill-tog{
+  display:inline-flex;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--br);border-radius:100px;
+  padding:4px;margin:28px auto 0;
+}
+.tb{padding:9px 24px;border-radius:100px;font-family:inherit;font-size:.84rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--mu);transition:all .25s}
+.tb.on{background:#fff;color:#0a0a0a;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.db{display:inline-block;background:rgba(34,197,94,.15);color:var(--g);font-size:.66rem;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:5px;vertical-align:middle}
+/* grid de planos */
+.plans{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:16px;margin-top:44px;
+  max-width:1000px;margin-left:auto;margin-right:auto;
+}
+/* card base */
+.pc{
+  background:var(--s1);
+  border:1px solid var(--br);
+  border-radius:24px;
+  padding:36px 28px 32px;
+  text-align:left;position:relative;
+  transition:border-color .3s,transform .3s,box-shadow .3s;
+  display:flex;flex-direction:column;
+}
+.pc:hover{border-color:rgba(255,255,255,.14);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.4)}
+/* card em destaque */
+.pc.feat{
+  background:linear-gradient(160deg,#1a1a1a 0%,#141414 100%);
+  border-color:rgba(34,197,94,.28);
+  box-shadow:0 0 0 1px rgba(34,197,94,.1),0 12px 40px rgba(0,0,0,.5);
+}
+.pc.feat:hover{border-color:rgba(34,197,94,.45);transform:translateY(-6px);box-shadow:0 0 0 1px rgba(34,197,94,.2),0 20px 56px rgba(0,0,0,.5)}
+/* linha verde no topo do card feat */
+.pc.feat::before{content:'';position:absolute;top:0;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);border-radius:0 0 2px 2px}
+/* badge "Mais popular" */
+.ppop{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(34,197,94,.12);
+  border:1px solid rgba(34,197,94,.3);
+  color:var(--g);font-size:.65rem;font-weight:800;
+  padding:4px 13px;border-radius:100px;
+  letter-spacing:.8px;text-transform:uppercase;
+  margin-bottom:22px;width:fit-content;
+}
+.ppop::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--g);animation:blink 2s infinite}
+/* planos sem badge — espaçador igual */
+.pt-spacer{height:31px;margin-bottom:22px}
+/* nome do plano */
+.pt{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.38);margin-bottom:18px}
+/* preço */
+.pp{display:flex;align-items:flex-start;gap:2px;line-height:1;margin-bottom:4px}
+.pp-cur{font-size:1rem;font-weight:700;color:rgba(255,255,255,.6);margin-top:8px}
+.pp-val{font-size:3.8rem;font-weight:900;color:#fff;letter-spacing:-3px;line-height:1}
+.pp-cent{font-size:1.4rem;font-weight:900;color:#fff;margin-top:6px;letter-spacing:-1px}
+.pper{font-size:.75rem;color:rgba(255,255,255,.35);margin:6px 0 0;letter-spacing:.2px}
+.ptag{font-size:.8rem;color:var(--mu);line-height:1.6;margin:14px 0 22px}
+.psep{height:1px;background:var(--br);margin-bottom:20px}
+/* features list */
+.pfl{list-style:none;display:flex;flex-direction:column;gap:12px;flex:1}
+.pfl li{display:flex;align-items:center;gap:10px;font-size:.84rem;color:var(--mi)}
+.pfl li .pck{
+  width:18px;height:18px;border-radius:50%;
+  background:rgba(34,197,94,.15);
+  border:1px solid rgba(34,197,94,.3);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:.6rem;color:var(--g);font-weight:900;
+}
+.pc.feat .pfl li .pck{background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.5)}
+/* botão */
+.pbtn{
+  width:100%;margin-top:28px;padding:14px;
+  border-radius:100px;font-family:inherit;font-size:.9rem;font-weight:700;
+  cursor:pointer;background:transparent;color:#fff;
+  border:1px solid rgba(255,255,255,.18);
+  transition:all .2s;letter-spacing:.2px;
+}
+.pbtn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3)}
+.pc.feat .pbtn{
+  background:#fff;color:#0a0a0a;border-color:#fff;
+  box-shadow:0 4px 20px rgba(255,255,255,.15);
+}
+.pc.feat .pbtn:hover{background:#f0f0f0;box-shadow:0 6px 28px rgba(255,255,255,.2)}
+
+/* ── TESTIMONIALS ── */
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.tc{background:var(--s1);border:1px solid var(--br);border-radius:20px;padding:24px;transition:border-color .3s}
+.tc:hover{border-color:rgba(255,255,255,.14)}
+.tc-stars{color:var(--g);font-size:.86rem;margin-bottom:14px}
+.tc-text{font-size:.86rem;color:var(--mi);line-height:1.75;margin-bottom:20px}
+.tc-author{display:flex;gap:11px;align-items:center}
+.tc-av{width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid rgba(34,197,94,.3)}
+.tc-av img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.tc-name{font-size:.85rem;font-weight:700;color:#fff}
+.tc-role{font-size:.7rem;color:var(--mu);margin-top:1px}
+
+/* ── FAQ ── */
+.faq-list{display:flex;flex-direction:column;max-width:760px;margin:44px auto 0}
+.faq-item{border-bottom:1px solid rgba(255,255,255,.07);position:relative;transition:background .2s}
+.faq-item:first-child{border-top:1px solid rgba(255,255,255,.07)}
+.faq-item:hover{background:rgba(255,255,255,.02)}
+.faq-q{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:24px 16px;background:none;border:none;cursor:pointer;
+  font-family:inherit;font-size:1.08rem;font-weight:700;letter-spacing:-.3px;
+  color:rgba(255,255,255,.72);text-align:left;transition:color .2s;
+}
+.faq-q:hover{color:#fff}
+.faq-q.open{color:#fff}
+/* botão +/x circular */
+.faq-ico-wrap{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  border:1.5px solid rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .28s cubic-bezier(.34,1.56,.64,1);
+  color:rgba(255,255,255,.4);
+}
+.faq-q:hover .faq-ico-wrap{border-color:rgba(255,255,255,.28);color:rgba(255,255,255,.7)}
+.faq-q.open .faq-ico-wrap{
+  background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.45);
+  color:var(--g);transform:rotate(45deg);
+}
+.faq-ico{flex-shrink:0;transition:transform .3s}
+.faq-a{
+  font-size:.92rem;color:rgba(255,255,255,.5);line-height:1.82;
+  max-height:0;overflow:hidden;
+  transition:max-height .38s ease,padding .3s ease;
+  padding:0 16px 0;
+}
+.faq-a.open{max-height:240px;padding:0 16px 24px}
+
+/* ── CTA ── */
+.cta{padding:112px 6%;text-align:center;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(34,197,94,.06) 0%,transparent 60%);pointer-events:none}
+.cta-h{font-size:clamp(2.8rem,5.5vw,4.8rem);font-weight:800;line-height:1.05;letter-spacing:-2px;max-width:820px;margin:0 auto;white-space:nowrap}
+.cta-h .g{color:var(--g)}
+.cta-p{color:var(--mu);max-width:340px;margin:20px auto 40px;font-size:.9rem;line-height:1.65}
+.cta-form{display:flex;gap:8px;justify-content:center;max-width:400px;margin:0 auto}
+.ci{flex:1;padding:14px 18px;border-radius:100px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:#fff;font-family:inherit;font-size:.88rem;outline:none;transition:border-color .2s}
+.ci::placeholder{color:rgba(255,255,255,.35)}
+.ci:focus{border-color:rgba(255,255,255,.25)}
+.cta-note{font-size:.72rem;color:rgba(255,255,255,.28);margin-top:16px;letter-spacing:.2px}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--br);padding:64px 6% 32px}
+.fg{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.fbd{font-size:.82rem;color:var(--mu);line-height:1.7;margin-top:12px;max-width:220px}
+.fct{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-bottom:14px}
+.fl{list-style:none;display:flex;flex-direction:column;gap:11px}
+.fl a{color:var(--mu);text-decoration:none;font-size:.83rem;transition:color .2s}
+.fl a:hover{color:#fff}
+.fb{border-top:1px solid var(--br);padding-top:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:.76rem;color:var(--mu)}
+
+/* ── ANIM ── */
+@keyframes fu{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.rv{opacity:0;transform:translateY(24px);transition:all .6s ease}
+.rv.vis{opacity:1;transform:none}
+.sec{padding:88px 6%}.sc{text-align:center}
+
+/* ── RESPONSIVE ── */
+/* ── RESPONSIVO MOBILE-FIRST ── */
+
+/* Tablet/mobile — hero vira 1 coluna com foto embaixo */
+@media(max-width:1060px){
+  .hero{
+    grid-template-columns:1fr;
+    text-align:center;
+    padding:100px 5% 60px;
+    min-height:auto;
+    gap:40px;
+  }
+  .hero-left{padding-right:0}
+  .hero-p{max-width:100%}
+  .hero-btns,.hero-stats{justify-content:center}
+  /* foto aparece no mobile mas sem os cards laterais */
+  .hero-right{display:block;padding:0}
+  .hero-photo{aspect-ratio:4/3;max-height:320px}
+  /* cards somem no tablet — ficam na foto apenas saldo e badge */
+  .tx-stack{display:none}
+  /* Pierre sections */
+  .pr{grid-template-columns:1fr;gap:32px;padding:60px 5%}
+  .pr.rev{direction:ltr}
+  .pr-ui.left,.pr-ui.right{
+    position:relative;left:auto;right:auto;
+    bottom:auto;top:auto;transform:none;
+    margin-top:16px;animation:none;
+    width:100%;
+  }
+  .ui-cat,.ui-subs,.ui-metas{min-width:unset}
+  /* grids */
+  .func-grid{grid-template-columns:repeat(2,1fr)}
+  .fc.span2{grid-column:span 1}
+  .sec4{grid-template-columns:1fr 1fr}
+  .plans{grid-template-columns:1fr}
+  .tg{grid-template-columns:1fr}
+  .fg{grid-template-columns:1fr 1fr}
+  .nm{display:none}
+  .trust-bar{gap:24px;flex-wrap:wrap}
+}
+
+/* Mobile pequeno */
+@media(max-width:600px){
+  .hero{padding:88px 4% 48px;gap:32px}
+  .hero-photo{aspect-ratio:3/2;max-height:260px;border-radius:16px}
+  .hero-h1{font-size:2.4rem;letter-spacing:-1.5px}
+  .hero-stats{gap:18px;flex-wrap:wrap;justify-content:center}
+  .hero-badge{font-size:.65rem;padding:5px 12px 5px 8px}
+  .hero-bal{padding:9px 12px;border-radius:10px}
+  .hb-amount{font-size:1rem}
+  /* Pierre sections */
+  .pr{padding:48px 4%;gap:24px}
+  .pr-photo{aspect-ratio:4/3;border-radius:16px}
+  .pr-ui{border-radius:14px}
+  .ui-cat{padding:12px 14px}
+  .ui-total{font-size:1.2rem}
+  .sub-grid{gap:7px}
+  .sub-c{padding:10px 6px}
+  .sub-ico{width:34px;height:34px;border-radius:10px}
+  .sub-val{font-size:.8rem}
+  /* grids */
+  .func-grid{grid-template-columns:1fr}
+  .fc.span2{grid-column:span 1}
+  .sec4{grid-template-columns:1fr}
+  .fg{grid-template-columns:1fr}
+  .trust-bar{flex-direction:column;gap:12px;align-items:flex-start;padding:16px 4%}
+  .plans{grid-template-columns:1fr;max-width:100%}
+  .tg{grid-template-columns:1fr}
+  /* nav mobile */
+  .nm{display:none}
+  nav{padding:10px 16px;top:12px}
+  /* CTA */
+  .cta-form{flex-direction:column}
+  .ci{min-width:unset;width:100%}
+  /* footer */
+  .fg{grid-template-columns:1fr}
+  .fb{flex-direction:column;gap:6px;font-size:.72rem}
+  /* FAQ */
+  .faq-q{font-size:.92rem;padding:18px 12px}
+  /* pricing toggle */
+  .bill-tog{width:100%;justify-content:center}
+}
+</style>
+<script>
+const LOGO_IFOOD = 'data:image/png;base64,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';
+const LOGO_BOOKING = 'data:image/png;base64,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';
+const LOGO_UBER = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAFAElEQVR4nO2ZS0hUbRjHf+975mbSzbTAvLWwUZMiWwQRNCkJEYhIFC5cBIFpO91E0ipaVasgVxJYq2bRoiCJCGnRpgto0YU2ESES1jSMkefMnPN8i49zaPpqd8a3D88fDsy8t/k/v/PeRwHCGpY2bcC0IgCmDZhWBMC0AdOKAJg2YFoRANMGTCsCYNqAaUUATBswrQiAaQOmFQEwbcC0IgCmDZjWmgcQC7tBrf9l6nnef9JEBKVUWZ5pKdb4rXBoPUBrjed5XLhwgYWFBaampojH4xSLRYaHh0kmk7x7945Dhw5x/vx5lFKImGcf2hyglAKgr6+PgwcPAmBZFgCZTIbu7m527drFwMBAWXnTCn0OyOfzfP/+vSxteXkZ13VZWVkhn8+jlCIWi+G6Lq7rlpXVWqO1xnXdoIdorSs2f4QOwLKsYNLz5QflBy4iOI4DUDYU/GHkB+nn+d8rMWRWdRlUSuE4DrFYjNOnT9Pb24uIBHA8z6Orq4tTp05RU1ODiFBdXc3u3bvZuHEj+/fvD33ohN4D/iT/bSYSCaanpxkcHARgdHSUyclJlFL09PTw4MEDtNbMzc1x4MABmpqamJmZ4c2bN6TTaRoaGkL1tWo9wLIsCoUCXV1dDA4OcvfuXT59+sTly5epq6tDRLh+/Tpfvnwhm82yZ88ezpw5w+fPn6mrq6O7u5u5ubnQfa3qECgWiwBcunSJvr4+jhw5QlVVFUePHqW9vZ2dO3fS39/PiRMnuHXrFsPDw6RSKWKxGJOTkwwMDAQrS1hatSEgIiSTSTzP4+rVq1iWxdu3b5mZmaGnp4fa2lqePXvGkydPAJiYmODFixek02ls22Zqagrbtv+/ADzPo6qqio8fP5LL5YjH43iex8OHDzl+/Diu67K8vMyxY8fQWpNKpXAch+bmZnK5HF+/fq3I5mlVAPjGLcticXERpVSQtrCwwIYNG0gkEmQyGTKZTFnd9evXUyqV8Dwv2AuEqdAB2LZNdXV1YFQpxbp164IA4vF42VtMJBIUi0Xi8Tjz8/Pcv3+fZDIZ1P3w4QPJZLJi2+bQAPgBLy4u0tbWhogETzqd5tWrV5RKJVpaWgCC9b+trY2lpSWWlpZ4//49586dK2u3tbWVVCpVsRNk6KvA06dP2bt3L5s2bcK2bWpra+ns7OTHjx/Yts2WLVvo7OykWCzieR79/f3Mz88zOztLb29v8PZbWlo4fPgwjuNU/NwgYTxaawGktbVVRERu374t+/btk2w2KyIi165dk6GhIRERmZ2dlR07dsjIyIiIiGQyGampqRERkStXrkhjY6Nks1l5/fq1NDc3y7dv36ShoaHsd0J8wmvMsiwB5M6dO/KzcrmcTE9Py9mzZ2VlZUVKpZI4jiMiIs+fP5dEIiGA3Lx5U0RE8vm8iIiMjY3J9u3bRUSksbHx7wegtRallNTX18vjx4+lUCjIxMSEjI+Py8WLF+XkyZNBTygUCvLy5Uvp6OgI6m7evFnu3bsnhUJBbty4IVpraWpqkkePHsnWrVv/fgCAKKUCo/X19X8st23bNkmlUmV1fs4L29cf/foUwtSvR1z/s7+O/3yu94/Afj2/3K/plVoGK3Yn+Gugv8sHfhvYal6XrflL0TX/v0AEwLQB04oAmDZgWhEA0wZMKwJg2oBpRQBMGzCtCIBpA6YVATBtwLQiAKYNmFYEwLQB01rzAP4BzAj6CvczkZcAAAAASUVORK5CYII=';
+const LOGO_SPOTIFY = 'data:image/png;base64,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';
+const LOGO_NETFLIX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAE5klEQVR4nO2bS4/cRBSFv1Pu7vS8MhmCEnYjAhIaAgKx4B+w4D+x5m/wR9iGFTuiEUJ5oOwCUTLvmX64Douy+5UhCpO4HJkcya2WZatunbr31K1bLgHmCpB0ldcahf3fu9LL3eC7htC2AW3jPQFtG9A2/vcEvJEIvi5CddWSKSBWFwv3VkfDK880AfEG02AXZoFGPSCQRvDros83oc9FxfU1xB9xyr1yPHvmpgLfFn2mGBAFcGK4V46uNkKviSwEfB+u8WN/g0ObgNlC/MyE787H1OnUbujxQ7HBuSMghsBDmV/iuFFPa5SA2uxnRF645ICSgDgGbhPYDoHDmKJ8SuTQkXMbMCPgNEOIZZkFJjYlMCDQQxjxkcQdFbNnhChWrhzG5SEAODWo8okSWEfshVUHzC+q2fKAE5uw0JwwX4Zi5Sn9y//mkIWAAJxgYjXCAZgY7qoH1aoy/S56QB5vyESAOLWZYkTq7AjzcSjY0atMaN4LsnnACHOGqZ1+AtxiLoTJkNUQ6MgsIKBEnHreYAQ2gL1KB14OgTzIJoLBcBzjbIxTvgdfLM0Eix5gOhMCBgrgEFNTIGohTCak/K/DHtATnACTSggDMMbcCT0GQUwMndUAk3LuseHMcyEck4RwVwWjhRli/lbzyKcBiEjg+CUhFHuhzxhjrUZ+RzQgwYjICyJhQfMFfKWCCLjygjT2HQoBSN0fAEeGWA2sgKnN50WPocS0hQJLPgIMA4ljRyaeC+EI+ITABwTOqmeX/aNZZPQA6CEubM7sWcNjzG3EbuhxYQhafatZZK0KF0CUOKpKXpCWxhvAZ6HgFKNZnzu0Gqwhp2698FwIkxHirgJjwFrMFZtHXgKAIXAQ46zcLWCK+ZQC2ZRLHe+QBkAa04HgCM8yQkhhcEOBgJhkrgnkJ4CCC8M5ywnRmswaMMoj/jNkJ6BXVYaObIqFCW9g2Axi7LxCmH1vsN4mO/By40LsIMZ4od8dCwFIfRtIPHNJnA81EbMTRESN7wcuIjsBJpXEH2HOWNaB60qTY+nkETmQnwDDusQTlzx1ZFB1tE6Ihkr1QsiTCbTiAUPgwOaxI4PqnoE+YhMxlpHyeEErH0j0ESPMfZf0NY/5AOworRDTYriDIlg3WgD3q43RepwjZlsFZWZbWsFQsB8nSyvDCFwPqThaOk8+1AoBSQfEn3HKX0T61f16r2ANVWuCDmpAHdV9YFwJ4bWqIB5J+rCmwFh5yuSthUBdD9h3SV8sCKHYlijt7s4CMJ/ifovTlfWfuS6Rax5o8TvB1LV9l1ww94gIbJHc32peBVojoHb5h5cI4bpgIFO6wyFQ43mMPIovC+GGCuJC0aQptEPASmDvO9KDpYxwEyg7S4CWObgfp0sHMAxsaf6/SbQeAgD7nnLOshBuUtBT85nAO0HAg0uEcKhUQO0MAbXARdLav473glQmfxzL9PUYMAUCZoMOEdAD1oEtxA2LjUreard/4MiH6rGDuI4YIjZf+QXZ27OrcQg4DJHfHXlKybHhV08BZkvfn+IFf2O2JXYV2FOPNYWUEDVsW+PnBW6GHpZ5HsvXbm1dgVuh4Ek5nX1g2QTyHZjQfG+wbnSx+rt4qiTHSZEa2UIAzzt3GS47QiOaJyILAVdxsVeR9TbxTuQBbeI9AW0b0DbeE9C2AW3jHwEz6ik4KGG4AAAAAElFTkSuQmCC';
+const LOGO_AMAZON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAEVUlEQVR4nO2abWiVZRjHf9f1nLOzV+fcapstl6WM2aQgqA8Nw8qgiIhmUR8ECyPrQxExQ4g+iAwp7ENfQi2ohVhISVFBL0YaglFNe0U0U5ejYmu10nHOds5z9eE5Z8ep207bc3YHe35wc97u81z/63+/PzwCGHMYdS3ANZEBrgW4JjLAtQDXRAa4FuCayADXAlwTGeBagGsiA1wLcE1kgGsBrokMcC3ANZEBrgW4JjLAtQDXRAa4FuCayADXAlwTGeBagGsiA1wLcE1kgGsBrpnzBsRcC5gIlaAggEHGwIrwKEf28lOL8WfxORJPIePPTqyCDAAQKU4LTBSnsVpZ1QZNC+DXP+Hdw8bgGYMi6LCpytUL1QBTwaSA+tMtKsHr+hVqw9vFbDdmuzDbje19SsfVCS3mZM542V+fWy10dSi+gWrQSmHjaTDM7liuvLQOBv6Cnm+UX3oVzsKiBYaI4AedIFSmbJGWBjHrVuvq8AzEAPM03JaQbKymGrGr6tUSMTEQm1+udqxL7OhmGYsdcpm8Qi7RR1ao2TtY9zq1qtKgO8Y0L7wYpSIRJPzJk2JfPyOzPwQgmI1jCtv2G2+857HmTp8DG6F9qZL2wSz4fabDQiU/5GKesGW1x8GNgopw6Tw43p+vFyYFbYQyBirGw6/7HO5Rlrf4fNppbL3fo64yb4SnQSnUDJXAvNwym/GFm1o89m0Qnl6T4ejvwffNtdDTO5M0J6ewrpLtes21aqeeV7NXMevG+l5Q23C7Z/Xz9IL6MZ24jF9NxK6/Um3Xes8yO8TsTey7TWpVpWIN1WL2stiNS4o092TfFERug9LaqHzUCU01PowCFdDfr+w5JLz1lfHFCWNoOOftRAjNtcIty+CBG4RbW33wDBSO9Sm3bYWTAz53XSO89qDQ2GkkR63wjUuB/Ofr5UxYcomy5wlou8InNQSJEqAMyAi/DQjfnobv++DEAPxxBkYyUBaHhmpYWg/XXg5tC43yaoMMpIchVgmHjit3vwi9gz4CbOkQFtcJ923ziSmkQ94hTsvQnAnzy5Tta4V7231IGskkxD3w4kAc8LJ/sOz2TSRYyQzIAClIjUIiAZQKO/cpj3b7/JMy4l6Q7AePe2x+3zjwk1+ULfm0e1RejPBQu7LpHuOyeh9SkE4FEydkcz4nkG/5lSOWABLwc5/y7NvCzoM+YGPXjnmwssXj4x8zYeR6UWY0pHLJ+QZ1lcpjNwtr243FDRaM5zRBS+ciCMH50wPSwpHTwiufCzs+M4aSQQsbXLDXD3vch37tc09vFQlhZauwaplw3SKjqQaqSgwE/k4Kpwbhy5Pw4Q+w/4gxku0qE50Ai30SDc1cEfDk/ElKSMShvCT4dDYFI2nGhYxp8c76hRB675LsjQzh4onlbnQY4PvF69qFUszhNRZg7Phm7hM+n6Ib8H9nzt8UjQxwLcA1kQGuBbgmMsC1ANdEBrgW4JrIANcCXPMvCq9JMIPRi/cAAAAASUVORK5CYII=';
+const LOGO_DECOLAR = 'data:image/png;base64,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';
+const LOGO_VR = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAMIUlEQVR4nO2bW2ycx3XHf2fmu+yulqIiUqZkqrRCybUjW4LtylYS+dKkMYLEsYEENdogLwEKNClQtEX7kPSpBVL0qe1DAvTNLYoARgvXl8ZyGidCLUuWZVeWLJeSJVEX6krRJHXnZS/fzOnD961MUnuTKmYfqiOsdj9y58yZ/5yZ8z9nhtLz46+q67KIUxRBUP4/iem0AZ2WOwB02oBOyx0AOm1Ap+UOAJ02oNNyB4BOG9BpuQNApw3otNwBoNMGdFruANBpAzotdwDotAGdljsAdNqATsuiA6CiqGj2+fbrF1VA8XJrtczg9ppzo4gKghCIwYmCwP8FBwHQ9IMCXlMQAq/4W1C8qACogFVLyVe46GYwXm7JyLmysHloLXEQE1mLeFC9OU9YVAAsUNJZ7i8O8OW+hyirS8vurUCojUHmPEv6XltGBmG6WubY1HmOXjrFudIk+ShPwcY479u2cZEBsMyWq3z3ka/zx4/87iL1opy4MsrrR3fywoGfcXD2LD1xF1UE0dZALOommOAp2JiHV92LU0/VVXHqb+PLAcJgdz9/uun32fZ7P+a79z7DtelpLO15waJ5gCCUfYV7Cn2sXz6IFYMxgshtDAVpAKCKx3vlrnwvL3zlBwwUe/nRvp+yLFfEt/CCRfMAI4ZyUmFD7yCfibtIvENv5+AhjQQCIUpkDIkmVL3nrz7/B/zJfc9yuXwNa4KmG+/iLQGBxMPmlZ9Ln9vY+26xGxCLiBBIgBVBVfmbJ/+IDd1rmK2UCDDQgCfcAIA1Bmtsey9pjJ9XTzcxmzIAxCwOAAvFiODVUwgL/OC3vsOsn8IC4uvbesMecHl2quW6SUUJTEAxLsyLvSppiEqSKv1LlrNx+SAAHsHWwllLzcoNh9SS7ivtiDEGj/KNwSd4cO9ahmfGWCJxqneBBKluweOJxPLDjd+hJyxSpYrJ1uycMIwAXh05iRm+do5/Of4mQRDOMVgRLLOuwoYV6+jOLcWrpt7ShKMoiqpH1WBNfbqY+ARjLKYFEILg1FEM8zy9ahNDh16hK5fD1+k/qHUeiGFqdorHf2MjX71nc9MOajKVlHjzzF7GqhcJTUB6wwBEwHvl0ZUPpINTxUpzDqyZ4UaU8ZkLJM5jJL2t4PAsDXIszXW3ZVdNoQpsWLUO+bg2fQ0AgNRtSxZeOLiVrww8inMeY2qXJhZ6geBdlWKQ4/HVD/DT4V8S57rTuKyCR1licny+bz1kgLS0V8FgGJ0e59mX/pxxnSIUm4GqiIn45sAWfvTEH5KzccslUcN7TVcfORPgGwBwfWdw6lkSFdh9foizUxNEgcWIIcg2vHnvYsAaVOCZgS9gvEElm30MVV+hb0kPD/Z+NjOmNQKqHgReH3mPfTMjTFFh0k0x4aeZ8LNMJpf5+49e5PUjbyMi+DbpbiHIY6ypu/7nAaAoOYkYLY2z7fguQNAsk1v4DxFCiRDgydUPc0+hj5IvI1iMCDOuxMM997IsXopTbTpTtd6tGJw6/uPoW+RsnhBDKAE5AiIx5ExMHMUcvnI6ayPQhO3Veqy4apYb1LdhXmxQddgg5tWTu1Dc9U2wUQ/ee1YUlrO5fwPlSgU1ghrQRNl8132Z0tYz5VUREf5nYph3Jw6zJMzhssjis8WsxpM4z/0r16Vq5w3zRnHZhI9dnaTqEjBtAOBwFIMCuyYPcvDiydTV6qSXwnz8nx14DPGSRYiU/z+6Kov/bbl/+v7vwzu44q8hIjgcDo9HqZqEiSuX+Fr/Fp6954uoKmKkrQrLBxdOpN9v7QGC4rHGcLlc4o2j76SgaJKGp3qNM1SfGniYu4rL8UmFqnP0F3rZsGKwJQBKOsPWGKaqM/x85F3yYY5AhKLmyElEjojeJM/31j/HP3/tL8mbODO8TlTRT98CSfeiHec+IogjaLBnLCBCgvGeXBiz9cR7/NmmbxPNCW83oic4VfqWrOCJvg28cmonBsMDyz/Lsrgbr9p8GQHqFYzwqzP7GL52FrHCYyvX85On/oKqr6BA3kb0F1eApsvFNHDnmkN477DGsuP0fvZPHmRJvoivRwJYsAQkG1A+DPjw8nHeHzuAiEGbuJpmC+G5gccRVZx3bFm5MTWkyfqvhdWa5peGt1G2nsiEnLg8Sm+hi7Xd/azr7qe/uALvPY6EJuw7K5elmqs4/nbvv+KsYrRxo/kAKFQsWIRZP8vW47vmK68jNvvNkwMPsSq3DER49O71zRtRY5SKMYbjV8/xzul9FIMIgpCRqbPsHzuEV6XiqiTqwQgW2zSieIXEOawx/GTPv7F9bC9Lw2Uk6mhEhOZHASDwqVvGcZ5tJ/cwVZnCGEPDkCOC947+4goe6bmP3rCLjT2D88CpJ2lB0wGw9dhORiuXCE1EgDLrKuw+fxgjaf3AisnWfHN94iEMAl489Cv+es8/0Z1bgtNq09uvdX3DoxRNxKGpc7w1uh8BXKPxI9dDzpdWb+LB7jV0x12p+7egvhZL2Vd45dhOwjBOkypVrAnYNXYg1a+2USY7X58qM67E3+19ke9v/wdMzrR18bfh4vACFany6rEdtZE2VpJpebL/IZ5f8wUg5e/qpWECpOoQI+wZ+5h9F46Qj2JUPV6VKIo5MDnMJ6VLBFau7zONxGmaN+z55DA/3PGPhLFiCNuqEDcGQD3FMM/bZz5kfHoSK43pZC3TW9+zhm9v/AYAQVakaAhcpuqVo28xoyWsmqzClTLSc7OTDI0fS21pMY+1SPNY32/yYP86yi7BtHkK03h7VAhtyNnpCX556oPUkIa7ejrQwAYUo2L2E2m4ZBXFGsvF0mV+fnIPhSg/v6ZghJJzvH92KH1uMRhBcN5TiAp8c+AJZiqVlCi1IU2CimJU8IHh5ZGd2ZdbV9AaeclcqbHL/zz1PsemRomDHB43R4nDBhHvjB+4Ts5aSQ3s59f+Np+J8iRan7sslIaaVUC9Jx/F7B4d4tiVsxk1br4eWyU+n/5VgvLy0bcxVm8IMOKVXBAxdGmE0emJNA1vsZ5NliF+bsUgm1euZ7oyg2lGGmrtGg5EBSdKLAETlcu8cbxGjduZ4/qimlJrg3D44ml2nztAISqAd+gcY50oOWMYn73Ch58MA9TNSRZYjM/AfX7waRJfaasQ0RIiVSUMQl4beRenScvSVlNdkhUnBX52bDtj7hoxYXay+6lSUXBGUO/YcX6obf02G84zg5tZU7ibsqu29Mg2APAUwpj9k4fZP348dbU2T13qaMMay6wr8dqJ7RQCQ5L9RuZydVHEA7Hhg/Mfp2HOtI7pKmnd8K58D19fvYnpymzLZdAaANKQdi2ZYevxlBM0yCtaivceFdg9+hH7L52iEOQyNriA5alB1ZO3MUcun2Hk6iiCUFXX1PvSzDPV8637foeChiTGI02iSFsHI957oijmjZPvUa6Wmp4HNBOR1CFfOvJ2yu+lMVdT0v1nsnKVj84fSttr89MVAayxKPDFuzfwQM8gs9VKw2IItAsASi7IM3RlhHdGhzDSPNOrJ5qVvUZnLvCLM3soRLmGKepcSfDX94F2qO31sr2N+Nbg41TLlaYZZNtTaTFUtcLLJ9Jo4FXRm3i5LJn4xYl3OTs9TmDDlpxBVYmDgPcnjlBOKteLoa36grSS9dzaLXTnilR90tBx2gYg5QQF/uv0Hq5WpglMSnXbfQXWAvDq8DaITFsJjlfI2YiRS+k+YMVgjWnZlxWDEeH+nrU8vfIhyqXGm2Fbx+NCWi+MbMTJ6U946dh2nluzhbKv1GdpC254eFVCE3Bw8gS7Lhyly+bbPn6zxnDRTfPm6f+mN15GSSvpHtQsumm6RGOJeWr1Rl47815DX5N2/3LUG0/gQqq2Qs6F5IOoZZIyryMEV/VM2RJGA1Rc0915/ngckcbp9Rdcw5PeuX0louSrMUlQ5YqbRrDUCyFtX5AQb1DxWDWUjWM2mWnzqLI2CBArBGrwNA9NC8WqpSJVZnwpy/LaqDTjmWIaTYQI0/AaXfsAUDu1TbG8pVCY0eibPSb3kp44RdzMGbv9tH0TT72lKzI65/9fn9x6DtJMAoykREGhBm+9W2q1Z13w81afuYnvzj2A/XX0n7Lc6QoGizif3uHRjJXOaSFzLJiruOHnOiOQOc+tdCxsvyj9Z+P8X2L+xb0dddrhAAAAAElFTkSuQmCC';
+</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nl"><div class="lb">Z</div>ZetaFin</a>
+  <ul class="nm">
+    <li><a href="#func">Funcionalidades</a></li>
+    <li><a href="#planos">Planos</a></li>
+    <li><a href="#dep">Depoimentos</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nr">
+    <a href="#" class="bng" onclick="openModal('login');return false;">Entrar</a>
+    <a href="#" class="bnw" onclick="openModal('register');return false;">Começar agora</a>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" style="background:#0a0a0a">
+  <div class="hero-glow"></div>
+  <div class="hero-left">
+    <h1 class="hero-h1">Não gerencie<br>mais seu dinheiro<br><span class="g">sozinho</span></h1>
+    <p class="hero-p">ZetaFin monitora, organiza e te ajuda a tomar decisões financeiras mais inteligentes — sem burocracia, sem complicação.</p>
+    <div class="hero-btns">
+      <a href="#" class="bw" onclick="openModal('register');return false;">Começar agora</a>
+      <a href="#func" class="bo">Como funciona →</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hs-num">98<span class="g">%</span></div><div class="hs-lbl">Satisfação</div></div>
+      <div><div class="hs-num"><span class="g">R$</span>0</div><div class="hs-lbl">Para começar</div></div>
+      <div><div class="hs-num">5<span class="g">min</span></div><div class="hs-lbl">Para configurar</div></div>
+      <div><div class="hs-num">100<span class="g">%</span></div><div class="hs-lbl">Seguro</div></div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+
+    <!-- foto portrait sem badge de limite diário -->
+    <div class="hero-photo">
+      <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1200&q=85&fit=crop&crop=top" alt="Pessoa usando ZetaFin">
+      <!-- saldo compacto dentro da foto -->
+      <div class="hero-bal">
+        <div>
+          <div class="hb-lbl">Saldo disponível</div>
+          <div class="hb-amount">R$ 4.820</div>
+          <div class="hb-chg">▲ +12% este mês</div>
+        </div>
+        <div class="hb-right">
+          <div class="hb-slbl">Score</div>
+          <div class="hb-score">B+</div>
+          <div class="hb-ssub">↑ subindo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- cards de transação — logos reais, transparentes, saindo à direita -->
+    <div class="tx-stack" id="txstack">
+      <div class="txc">
+        <div class="aico" style="background:#EA1D2C;border-radius:9px"><img id="ico-ifood-h" width="32" height="32" style="border-radius:8px;object-fit:cover"></div>
+        <div class="tx-d"><div class="tx-n">Delivery de comida</div><div class="tx-s">Alimentação · 28 Jun</div></div>
+        <div class="tx-v neg">R$ 42,00</div>
+      </div>
+      <div class="txc">
+        <div class="aico" style="background:#003B95;border-radius:9px"><img id="ico-booking-h" width="32" height="32" style="border-radius:8px;object-fit:cover"></div>
+        <div class="tx-d"><div class="tx-n">Hospedagem</div><div class="tx-s">Viagens · 24 Jun</div></div>
+        <div class="tx-v neg">R$ 120,00</div>
+      </div>
+      <div class="txc">
+        <div class="aico" style="background:#000;border-radius:9px"><img id="ico-uber-h" width="32" height="32" style="border-radius:8px;object-fit:cover"></div>
+        <div class="tx-d"><div class="tx-n">Corrida</div><div class="tx-s">parcela 1/4 · 28 Jun</div></div>
+        <div class="tx-v neg">R$ 120,00</div>
+      </div>
+      <div class="txc">
+        <div class="aico" style="background:#2d7a3a;border-radius:9px"><img id="ico-vr-h" width="32" height="32" style="border-radius:8px;object-fit:cover"></div>
+        <div class="tx-d"><div class="tx-n">Vale Refeição VR</div><div class="tx-s">Receita · 01 Jun</div></div>
+        <div class="tx-v pos">R$ 600,00</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ═══════════ FUNCIONALIDADES — Carousel interativo ═══════════ -->
+<style>
+/* ── FEATURE CAROUSEL ── */
+.feat-section{padding:96px 6% 100px;background:#0d0d0d;border-top:1px solid rgba(255,255,255,.06)}
+
+/* ── step indicators — pontos simples ── */
+.feat-steps-row{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:48px;
+}
+.feat-step-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,.15);
+  cursor:pointer;transition:all .3s ease;flex-shrink:0;
+}
+.feat-step-dot.on{width:28px;border-radius:100px;background:#22c55e}
+.feat-step-label{
+  font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.22);margin-left:6px;
+  transition:color .3s;
+}
+.feat-step-label.on{color:#22c55e}
+
+/* ── viewport (clip) ── */
+.feat-viewport{
+  position:relative;overflow:hidden;
+}
+
+/* ── track: slides em linha horizontal ── */
+.feat-track{
+  display:flex;
+  transition:transform .5s cubic-bezier(.77,0,.18,1);
+  will-change:transform;
+}
+
+/* ── cada slide: ocupa 100% do viewport ── */
+.feat-slide{
+  min-width:100%;
+  display:grid;
+  grid-template-columns:1fr 1.12fr;
+  gap:56px;
+  align-items:start;
+  /* altura fixa para não mudar posição dos controles */
+}
+
+/* texto esquerdo — altura mínima fixa para estabilizar layout */
+.feat-text{
+  min-height:420px;
+  display:flex;flex-direction:column;
+}
+
+.feat-slide-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#22c55e;font-size:.7rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px 5px 10px;border-radius:100px;margin-bottom:20px;width:fit-content}
+.feat-slide-tag svg{flex-shrink:0}
+
+/* título e parágrafo: tamanho FIXO igual em todos os slides */
+.feat-slide-h{
+  font-size:2.4rem;font-weight:800;line-height:1.1;letter-spacing:-1.2px;
+  color:#fff;margin-bottom:16px;
+  min-height:3.2em; /* reserva espaço fixo para evitar saltos */
+  display:flex;flex-direction:column;justify-content:flex-start;
+}
+.feat-slide-h .g{color:#22c55e}
+.feat-slide-p{
+  font-size:.97rem;color:rgba(255,255,255,.52);line-height:1.78;
+  margin-bottom:28px;
+  min-height:3.6em; /* reserva espaço fixo */
+  max-width:380px;
+}
+
+/* bullets */
+.feat-bullets{display:flex;flex-direction:column;gap:14px;margin-bottom:auto;padding-bottom:32px}
+.feat-bullet{display:flex;align-items:flex-start;gap:13px}
+.feat-bullet-ico{width:26px;height:26px;border-radius:8px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.feat-bullet-ico svg{color:#22c55e}
+.feat-bullet-text .bt{font-size:.92rem;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:2px}
+.feat-bullet-text .bs{font-size:.82rem;color:rgba(255,255,255,.38);line-height:1.5}
+
+/* lado direito: mockup */
+.feat-mockup{
+  background:#0a0a0a;border:1px solid rgba(255,255,255,.09);
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.55),0 0 0 1px rgba(34,197,94,.05);
+}
+
+/* ── mockup topbar shared ── */
+.mk-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:#080808}
+.mk-bar-l{display:flex;align-items:center;gap:8px}
+.mk-bar-r{display:flex;align-items:center;gap:7px}
+.mk-logo{width:20px;height:20px;background:#22c55e;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:900;color:#000;flex-shrink:0}
+.mk-brand{font-size:.76rem;font-weight:700;color:#fff}
+.mk-divider{width:1px;height:12px;background:rgba(255,255,255,.1)}
+.mk-page{font-size:.68rem;color:rgba(255,255,255,.28)}
+.mk-pill{display:flex;align-items:center;gap:5px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.16);padding:3px 10px;border-radius:100px;font-size:.6rem;color:rgba(255,255,255,.38)}
+.mk-dot{width:5px;height:5px;border-radius:50%;background:#22c55e;animation:blink 2s infinite}
+.mk-bell{width:24px;height:24px;border-radius:50%;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#f87171}
+.mk-av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:800;color:#000}
+
+/* ── tabs ── */
+.mk-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.06);padding:0 16px;background:#080808}
+.mk-tab{padding:8px 12px;font-size:.68rem;font-weight:500;color:rgba(255,255,255,.25);cursor:default;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.mk-tab.on{color:#22c55e;border-bottom-color:#22c55e;font-weight:600}
+
+/* ── SLIDE 1: Dashboard ── */
+.mk-body{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.mk-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mk-kpi{padding:11px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.mk-kpi.hi{border-color:rgba(34,197,94,.15);background:rgba(34,197,94,.04)}
+.mk-kl{font-size:.53rem;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-bottom:4px}
+.mk-kv{font-size:.95rem;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:2px}
+.mk-kv.g{color:#22c55e}
+.mk-kg{font-size:.55rem;font-weight:600}
+.mk-kg.up{color:rgba(34,197,94,.65)}.mk-kg.dn{color:rgba(251,113,133,.65)}
+.mk-panels{display:flex;gap:10px}
+.mk-panel{flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)}
+.mk-ptitle{font-size:.67rem;font-weight:700;color:rgba(255,255,255,.42);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.mk-ptitle a{font-size:.58rem;color:#22c55e;font-weight:600}
+.mk-spark svg{display:block}
+.mk-slabels{display:flex;justify-content:space-between;margin-top:4px}
+.mk-slabels span{font-size:.52rem;color:rgba(255,255,255,.2)}
+.mk-cats{display:grid;grid-template-columns:1fr 1fr;gap:3px 8px;margin-top:8px}
+.mk-cat{display:flex;align-items:center;gap:4px;font-size:.6rem;color:rgba(255,255,255,.35)}
+.mk-cdot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.mk-cval{margin-left:auto;font-weight:600;color:rgba(255,255,255,.5);font-size:.58rem}
+.mk-txlist{display:flex;flex-direction:column}
+.mk-txrow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.mk-txrow:last-child{border:none;padding-bottom:0}
+.mk-txico{width:24px;height:24px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.mk-txinfo{flex:1;min-width:0}
+.mk-txname{font-size:.67rem;font-weight:600;color:rgba(255,255,255,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mk-txdate{font-size:.54rem;color:rgba(255,255,255,.2);margin-top:1px}
+.mk-txval{font-size:.67rem;font-weight:700;flex-shrink:0}
+.mk-txval.neg{color:#fb7185}.mk-txval.pos{color:#22c55e}
+
+/* ── SLIDE 2: Lançamentos ── */
+.mk-toolbar{display:flex;gap:7px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05)}
+.mk-srch{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 12px;font-size:.7rem;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:7px}
+.mk-srch svg{flex-shrink:0;color:rgba(255,255,255,.25)}
+.mk-fbtn{padding:7px 14px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:8px;font-size:.68rem;font-weight:700;color:#22c55e;cursor:default;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.mk-addbtn{padding:7px 14px;background:#22c55e;border-radius:8px;font-size:.68rem;font-weight:800;color:#000;cursor:default;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.mk-list{padding:0 16px 14px}
+.mk-list-grp{margin-top:10px}
+.mk-list-date{font-size:.58rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.22);margin-bottom:6px;font-weight:700;padding:0 2px}
+.mk-list-row{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.025);margin-bottom:4px}
+.mk-list-ico{width:28px;height:28px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8rem}
+.mk-list-info{flex:1;min-width:0}
+.mk-list-name{font-size:.72rem;font-weight:600;color:rgba(255,255,255,.8)}
+.mk-list-cat{font-size:.58rem;color:rgba(255,255,255,.28);margin-top:2px}
+.mk-list-val{font-size:.74rem;font-weight:800;flex-shrink:0}
+.mk-list-val.neg{color:#fb7185}.mk-list-val.pos{color:#22c55e}
+
+/* ── SLIDE 3: Metas ── */
+.mk-goals{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.mk-goal{padding:14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
+.mk-goal.hi{border-color:rgba(34,197,94,.2);background:rgba(34,197,94,.03)}
+.mk-goal-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.mk-goal-name{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.85)}
+.mk-goal-sub{font-size:.6rem;color:rgba(255,255,255,.3);margin-top:2px}
+.mk-goal-pct{font-size:.78rem;font-weight:800}
+.mk-track{height:6px;background:rgba(255,255,255,.08);border-radius:100px;overflow:hidden;margin-bottom:8px}
+.mk-goal-footer{display:flex;justify-content:space-between;font-size:.6rem;color:rgba(255,255,255,.3)}
+.mk-goal-footer strong{color:rgba(255,255,255,.6);font-weight:700}
+.mk-add-goal{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:12px;border:1.5px dashed rgba(255,255,255,.1);font-size:.72rem;color:rgba(255,255,255,.28);cursor:default}
+
+/* ── SLIDE 4: Score ── */
+.mk-score-area{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.mk-score-hero{display:flex;align-items:center;gap:16px;padding:16px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:14px}
+.mk-score-circle{width:68px;height:68px;border-radius:50%;background:conic-gradient(#22c55e 0% 72%,rgba(255,255,255,.08) 72% 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.mk-score-circle::after{content:'';position:absolute;inset:7px;border-radius:50%;background:#0a0a0a}
+.mk-score-val{position:relative;z-index:1;font-size:1.1rem;font-weight:900;color:#22c55e;letter-spacing:-1px}
+.mk-score-grade{font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1}
+.mk-score-change{display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:#22c55e;font-size:.62rem;font-weight:700;padding:2px 9px;border-radius:100px;margin-top:5px}
+.mk-score-desc{font-size:.7rem;color:rgba(255,255,255,.38);margin-top:4px;line-height:1.4}
+.mk-insight-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.3);margin-bottom:6px}
+.mk-insights{display:flex;flex-direction:column;gap:6px}
+.mk-insight{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.mk-insight-ico{width:26px;height:26px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.82rem}
+.mk-insight-text{font-size:.7rem;color:rgba(255,255,255,.55);line-height:1.35;flex:1}
+.mk-insight-text strong{color:rgba(255,255,255,.85);font-weight:700}
+
+/* ── controles: setas + dots ── */
+.feat-controls{
+  display:flex;align-items:center;gap:16px;
+  margin-top:36px;
+}
+.feat-arr{
+  width:44px;height:44px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.12);
+  background:transparent;color:rgba(255,255,255,.5);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;flex-shrink:0;
+}
+.feat-arr:hover{border-color:rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.05)}
+.feat-arr.nxt{border-color:rgba(34,197,94,.35);color:#22c55e;background:rgba(34,197,94,.06)}
+.feat-arr.nxt:hover{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.7)}
+
+.feat-dots{display:flex;gap:6px;align-items:center}
+.feat-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s;cursor:pointer}
+.feat-dot.on{width:22px;border-radius:100px;background:#22c55e}
+
+/* responsive */
+@media(max-width:900px){
+  .feat-slide{grid-template-columns:1fr}
+  .feat-mockup{display:none}
+}
+@media(max-width:600px){
+  .feat-slide-h{font-size:1.9rem;min-height:auto}
+  .feat-slide-p{min-height:auto}
+  .feat-text{min-height:auto}
+}
+</style>
+
+<!-- ═══════════ FUNCIONALIDADES ═══════════ -->
+<style>
+/* ── layout geral ── */
+.feat-section{padding:96px 6% 100px;background:#0d0d0d;border-top:1px solid rgba(255,255,255,.06)}
+.feat-wrap{display:grid;grid-template-columns:1fr 1.15fr;gap:64px;align-items:start}
+
+/* ── lado esquerdo: FIXO ── */
+.feat-left{position:sticky;top:80px}
+
+/* step dots + label */
+.feat-steps-row{display:flex;align-items:center;gap:8px;margin-bottom:40px}
+.feat-step-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);cursor:pointer;transition:all .3s ease;flex-shrink:0;border:none;padding:0}
+.feat-step-dot.on{width:26px;border-radius:100px;background:#22c55e}
+.feat-step-label{font-size:.7rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#22c55e;margin-left:4px}
+
+/* tag */
+.feat-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#22c55e;font-size:.7rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px 5px 10px;border-radius:100px;margin-bottom:18px}
+
+/* textos — fade-in ao trocar */
+.feat-content-panel{display:none;opacity:0}
+.feat-content-panel.active{display:block;animation:fcFade .3s ease forwards}
+@keyframes fcFade{from{opacity:0}to{opacity:1}}
+
+.feat-slide-h{font-size:2.5rem;font-weight:800;line-height:1.08;letter-spacing:-1.4px;color:#fff;margin-bottom:14px}
+.feat-slide-h .g{color:#22c55e}
+.feat-slide-p{font-size:.97rem;color:rgba(255,255,255,.5);line-height:1.78;margin-bottom:28px;max-width:390px}
+
+/* bullets */
+.feat-bullets{display:flex;flex-direction:column;gap:13px;margin-bottom:40px}
+.feat-bullet{display:flex;align-items:flex-start;gap:12px}
+.feat-bullet-ico{width:24px;height:24px;border-radius:7px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.feat-bullet-ico svg{color:#22c55e}
+.feat-bullet-text .bt{font-size:.9rem;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:2px}
+.feat-bullet-text .bs{font-size:.8rem;color:rgba(255,255,255,.36);line-height:1.5}
+
+/* controles: sempre no mesmo lugar */
+.feat-controls{display:flex;align-items:center;gap:14px}
+.feat-arr{width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;flex-shrink:0}
+.feat-arr:hover{border-color:rgba(255,255,255,.4);color:#fff;background:rgba(255,255,255,.06)}
+.feat-arr.nxt{border-color:rgba(34,197,94,.4);color:#22c55e;background:rgba(34,197,94,.07)}
+.feat-arr.nxt:hover{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.8)}
+.feat-dots{display:flex;gap:6px;align-items:center}
+.feat-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s;cursor:pointer;border:none;padding:0}
+.feat-dot.on{width:20px;border-radius:100px;background:#22c55e}
+
+/* ── lado direito: container dos mockups ── */
+.feat-right{position:relative}
+.feat-mockup-wrap{position:relative;min-height:420px}
+
+/* cada mockup: cross-fade suave — sem translateY, sem scale */
+.feat-mockup{
+  position:absolute;inset:0;
+  background:#0a0a0a;border:1px solid rgba(255,255,255,.09);
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 28px 72px rgba(0,0,0,.6),0 0 0 1px rgba(34,197,94,.05);
+  opacity:0;pointer-events:none;
+  transition:opacity .35s ease;
+}
+.feat-mockup.active{
+  opacity:1;pointer-events:all;
+  position:relative;
+}
+.feat-mockup.exit{
+  opacity:0;
+  transition:opacity .18s ease;
+}
+
+/* mockup internos */
+.mk-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:#080808}
+.mk-bar-l{display:flex;align-items:center;gap:8px}
+.mk-bar-r{display:flex;align-items:center;gap:7px}
+.mk-logo{width:20px;height:20px;background:#22c55e;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:900;color:#000;flex-shrink:0}
+.mk-brand{font-size:.76rem;font-weight:700;color:#fff}
+.mk-divider{width:1px;height:12px;background:rgba(255,255,255,.1)}
+.mk-page{font-size:.68rem;color:rgba(255,255,255,.28)}
+.mk-pill{display:flex;align-items:center;gap:5px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.16);padding:3px 10px;border-radius:100px;font-size:.6rem;color:rgba(255,255,255,.38)}
+.mk-dot{width:5px;height:5px;border-radius:50%;background:#22c55e;animation:blink 2s infinite}
+.mk-bell{width:24px;height:24px;border-radius:50%;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#f87171}
+.mk-av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:800;color:#000}
+.mk-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.06);padding:0 16px;background:#080808}
+.mk-tab{padding:8px 12px;font-size:.68rem;font-weight:500;color:rgba(255,255,255,.25);cursor:default;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.mk-tab.on{color:#22c55e;border-bottom-color:#22c55e;font-weight:600}
+.mk-body{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.mk-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mk-kpi{padding:11px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.mk-kpi.hi{border-color:rgba(34,197,94,.15);background:rgba(34,197,94,.04)}
+.mk-kl{font-size:.53rem;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.25);margin-bottom:4px}
+.mk-kv{font-size:.95rem;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:2px}
+.mk-kv.g{color:#22c55e}
+.mk-kg{font-size:.55rem;font-weight:600}
+.mk-kg.up{color:rgba(34,197,94,.65)}.mk-kg.dn{color:rgba(251,113,133,.65)}
+.mk-panels{display:flex;gap:10px}
+.mk-panel{flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)}
+.mk-ptitle{font-size:.67rem;font-weight:700;color:rgba(255,255,255,.42);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.mk-ptitle a{font-size:.58rem;color:#22c55e;font-weight:600}
+.mk-spark svg{display:block}
+.mk-slabels{display:flex;justify-content:space-between;margin-top:4px}
+.mk-slabels span{font-size:.52rem;color:rgba(255,255,255,.2)}
+.mk-cats{display:grid;grid-template-columns:1fr 1fr;gap:3px 8px;margin-top:8px}
+.mk-cat{display:flex;align-items:center;gap:4px;font-size:.6rem;color:rgba(255,255,255,.35)}
+.mk-cdot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.mk-cval{margin-left:auto;font-weight:600;color:rgba(255,255,255,.5);font-size:.58rem}
+.mk-txlist{display:flex;flex-direction:column}
+.mk-txrow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.mk-txrow:last-child{border:none;padding-bottom:0}
+.mk-txico{width:24px;height:24px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.mk-txinfo{flex:1;min-width:0}
+.mk-txname{font-size:.67rem;font-weight:600;color:rgba(255,255,255,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mk-txdate{font-size:.54rem;color:rgba(255,255,255,.2);margin-top:1px}
+.mk-txval{font-size:.67rem;font-weight:700;flex-shrink:0}
+.mk-txval.neg{color:#fb7185}.mk-txval.pos{color:#22c55e}
+.mk-toolbar{display:flex;gap:7px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05)}
+.mk-srch{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 12px;font-size:.7rem;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:7px}
+.mk-srch svg{flex-shrink:0;color:rgba(255,255,255,.25)}
+.mk-fbtn{padding:7px 14px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:8px;font-size:.68rem;font-weight:700;color:#22c55e;cursor:default;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.mk-addbtn{padding:7px 14px;background:#22c55e;border-radius:8px;font-size:.68rem;font-weight:800;color:#000;cursor:default;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.mk-list{padding:0 16px 14px}
+.mk-list-grp{margin-top:10px}
+.mk-list-date{font-size:.58rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.22);margin-bottom:6px;font-weight:700;padding:0 2px}
+.mk-list-row{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.025);margin-bottom:4px}
+.mk-list-ico{width:28px;height:28px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8rem}
+.mk-list-info{flex:1;min-width:0}
+.mk-list-name{font-size:.72rem;font-weight:600;color:rgba(255,255,255,.8)}
+.mk-list-cat{font-size:.58rem;color:rgba(255,255,255,.28);margin-top:2px}
+.mk-list-val{font-size:.74rem;font-weight:800;flex-shrink:0}
+.mk-list-val.neg{color:#fb7185}.mk-list-val.pos{color:#22c55e}
+.mk-goals{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.mk-goal{padding:14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
+.mk-goal.hi{border-color:rgba(34,197,94,.2);background:rgba(34,197,94,.03)}
+.mk-goal-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.mk-goal-name{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.85)}
+.mk-goal-sub{font-size:.6rem;color:rgba(255,255,255,.3);margin-top:2px}
+.mk-goal-pct{font-size:.78rem;font-weight:800}
+.mk-track{height:6px;background:rgba(255,255,255,.08);border-radius:100px;overflow:hidden;margin-bottom:8px}
+.mk-goal-footer{display:flex;justify-content:space-between;font-size:.6rem;color:rgba(255,255,255,.3)}
+.mk-goal-footer strong{color:rgba(255,255,255,.6);font-weight:700}
+.mk-add-goal{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:12px;border:1.5px dashed rgba(255,255,255,.1);font-size:.72rem;color:rgba(255,255,255,.28);cursor:default}
+.mk-score-area{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.mk-score-hero{display:flex;align-items:center;gap:16px;padding:16px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:14px}
+.mk-score-circle{width:68px;height:68px;border-radius:50%;background:conic-gradient(#22c55e 0% 72%,rgba(255,255,255,.08) 72% 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.mk-score-circle::after{content:'';position:absolute;inset:7px;border-radius:50%;background:#0a0a0a}
+.mk-score-val{position:relative;z-index:1;font-size:1.1rem;font-weight:900;color:#22c55e;letter-spacing:-1px}
+.mk-score-grade{font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1}
+.mk-score-change{display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:#22c55e;font-size:.62rem;font-weight:700;padding:2px 9px;border-radius:100px;margin-top:5px}
+.mk-score-desc{font-size:.7rem;color:rgba(255,255,255,.38);margin-top:4px;line-height:1.4}
+.mk-insight-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.3);margin-bottom:6px}
+.mk-insights{display:flex;flex-direction:column;gap:6px}
+.mk-insight{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.mk-insight-ico{width:26px;height:26px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.82rem}
+.mk-insight-text{font-size:.7rem;color:rgba(255,255,255,.55);line-height:1.35;flex:1}
+.mk-insight-text strong{color:rgba(255,255,255,.85);font-weight:700}
+
+@media(max-width:900px){.feat-wrap{grid-template-columns:1fr}.feat-right{display:none}.feat-left{position:static}}
+@media(max-width:600px){.feat-slide-h{font-size:2rem}}
+</style>
+
+<section class="feat-section" id="func">
+  <div class="feat-wrap rv">
+
+    <!-- ══ ESQUERDA: texto fixo ══ -->
+    <div class="feat-left">
+
+      <!-- indicadores + label -->
+      <div class="feat-steps-row">
+        <button class="feat-step-dot on" data-i="0" onclick="goSlide(0)"></button>
+        <button class="feat-step-dot" data-i="1" onclick="goSlide(1)"></button>
+        <button class="feat-step-dot" data-i="2" onclick="goSlide(2)"></button>
+        <button class="feat-step-dot" data-i="3" onclick="goSlide(3)"></button>
+        <span class="feat-step-label" id="feat-step-label">Visão geral</span>
+      </div>
+
+      <!-- painel 0 -->
+      <div class="feat-content-panel active" data-panel="0">
+        <div class="feat-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Painel principal</div>
+        <h3 class="feat-slide-h">Tudo em um só lugar,<br><span class="g">simples assim</span></h3>
+        <p class="feat-slide-p">Quando você abre o ZetaFin, vê tudo que importa de cara — sem precisar procurar. Quanto você tem, quanto já gastou e quanto ainda pode gastar hoje.</p>
+        <div class="feat-bullets">
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Limite diário inteligente</div><div class="bs">O sistema calcula quanto você pode gastar hoje sem comprometer as metas do mês.</div></div></div>
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Gastos por categoria</div><div class="bs">Alimentação, transporte, lazer — tudo organizado automaticamente sem você fazer nada.</div></div></div>
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Últimas transações sempre visíveis</div><div class="bs">Veja cada gasto recente com data, horário e valor sem precisar entrar em outra tela.</div></div></div>
+        </div>
+      </div>
+
+      <!-- painel 1 -->
+      <div class="feat-content-panel" data-panel="1">
+        <div class="feat-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Registrar gastos</div>
+        <h3 class="feat-slide-h">Anote um gasto em<br><span class="g">menos de 10 segundos</span></h3>
+        <p class="feat-slide-p">Sem complicação. Você escolhe o valor, a categoria, e pronto. O ZetaFin cuida do resto — classifica, soma e atualiza seu saldo na hora.</p>
+        <div class="feat-bullets">
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Interface com botões claros e letras grandes</div><div class="bs">Projetado para ser fácil mesmo sem óculos ou em situações de pressa.</div></div></div>
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Filtre e encontre qualquer lançamento</div><div class="bs">Busca por nome, categoria ou data. Histórico completo sempre ao alcance.</div></div></div>
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Edite ou exclua quando quiser</div><div class="bs">Errou o valor? Clica, corrige. Sem travamento nem burocracia.</div></div></div>
+        </div>
+      </div>
+
+      <!-- painel 2 -->
+      <div class="feat-content-panel" data-panel="2">
+        <div class="feat-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Objetivos financeiros</div>
+        <h3 class="feat-slide-h">Defina uma meta e veja<br>o <span class="g">progresso crescer</span></h3>
+        <p class="feat-slide-p">Seja uma viagem, um fundo de emergência ou trocar de carro — você cria a meta, coloca o valor e o ZetaFin mostra exatamente o quanto falta.</p>
+        <div class="feat-bullets">
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Barra de progresso visual</div><div class="bs">Você vê o quanto já guardou e o quanto falta — motivação na tela toda vez que abre.</div></div></div>
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Previsão de conclusão</div><div class="bs">Com base no ritmo atual, o ZetaFin estima quando você vai atingir cada objetivo.</div></div></div>
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Múltiplas metas simultâneas</div><div class="bs">Crie quantas metas precisar e priorize como quiser.</div></div></div>
+        </div>
+      </div>
+
+      <!-- painel 3 -->
+      <div class="feat-content-panel" data-panel="3">
+        <div class="feat-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Score financeiro</div>
+        <h3 class="feat-slide-h">Sua saúde financeira<br>em um <span class="g">número claro</span></h3>
+        <p class="feat-slide-p">Chega de adivinhar se você está indo bem. O ZetaFin calcula seu score e te diz exatamente o que melhorar — em linguagem simples, sem jargão.</p>
+        <div class="feat-bullets">
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Score de A a F, igual a uma nota escolar</div><div class="bs">Fácil de entender: A+ é excelente, F precisa melhorar. Sem jargão financeiro complicado.</div></div></div>
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Insights personalizados todo mês</div><div class="bs">O sistema aponta onde você pode economizar com base nos seus próprios hábitos.</div></div></div>
+          <div class="feat-bullet"><div class="feat-bullet-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="feat-bullet-text"><div class="bt">Histórico de evolução</div><div class="bs">Veja mês a mês como sua vida financeira melhorou desde que começou a usar o ZetaFin.</div></div></div>
+        </div>
+      </div>
+
+      <!-- controles: SEMPRE visíveis, nunca se movem -->
+      <div class="feat-controls">
+        <button class="feat-arr" id="feat-prev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="feat-arr nxt" id="feat-next"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <div class="feat-dots">
+          <button class="feat-dot on" data-i="0" onclick="goSlide(0)"></button>
+          <button class="feat-dot" data-i="1" onclick="goSlide(1)"></button>
+          <button class="feat-dot" data-i="2" onclick="goSlide(2)"></button>
+          <button class="feat-dot" data-i="3" onclick="goSlide(3)"></button>
+        </div>
+      </div>
+
+    </div><!-- /feat-left -->
+
+    <!-- ══ DIREITA: apenas os mockups trocam ══ -->
+    <div class="feat-right">
+      <div class="feat-mockup-wrap">
+
+        <!-- mockup 0: Dashboard -->
+        <div class="feat-mockup active" data-mockup="0">
+          <div class="mk-bar"><div class="mk-bar-l"><div class="mk-logo">Z</div><span class="mk-brand">ZetaFin</span><div class="mk-divider"></div><span class="mk-page">Dashboard</span></div><div class="mk-bar-r"><div class="mk-pill"><span class="mk-dot"></span>Limite hoje <strong style="color:#22c55e;margin-left:3px">R$ 85</strong></div><div class="mk-bell">2</div><div class="mk-av">LK</div></div></div>
+          <div class="mk-tabs"><div class="mk-tab on">Dashboard</div><div class="mk-tab">Lançamentos</div><div class="mk-tab">Metas</div><div class="mk-tab">Relatórios</div></div>
+          <div class="mk-body">
+            <div class="mk-kpis">
+              <div class="mk-kpi hi"><div class="mk-kl">Saldo</div><div class="mk-kv g">R$ 4.820</div><div class="mk-kg up">▲ +12%</div></div>
+              <div class="mk-kpi"><div class="mk-kl">Gastos</div><div class="mk-kv">R$ 2.340</div><div class="mk-kg dn">▼ −8%</div></div>
+              <div class="mk-kpi"><div class="mk-kl">Receitas</div><div class="mk-kv">R$ 7.160</div><div class="mk-kg up">▲ +3%</div></div>
+              <div class="mk-kpi"><div class="mk-kl">Score</div><div class="mk-kv g" style="font-size:.88rem;display:flex;align-items:center;gap:4px">B+ <span style="font-size:.5rem;background:rgba(34,197,94,.15);padding:1px 6px;border-radius:100px;color:rgba(34,197,94,.8)">↑</span></div><div class="mk-kg up">+1 nível</div></div>
+            </div>
+            <div class="mk-panels">
+              <div class="mk-panel">
+                <div class="mk-ptitle">Gastos por semana</div>
+                <div class="mk-spark"><svg viewBox="0 0 220 52" width="100%" height="52" preserveAspectRatio="none"><defs><linearGradient id="sg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22c55e" stop-opacity=".28"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></linearGradient></defs><path d="M0 42 L55 28 L110 36 L165 16 L220 22" stroke="#22c55e" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M0 42 L55 28 L110 36 L165 16 L220 22 V52 H0 Z" fill="url(#sg2)"/><circle cx="55" cy="28" r="2.5" fill="#22c55e"/><circle cx="110" cy="36" r="2.5" fill="#22c55e"/><circle cx="165" cy="16" r="3" fill="#22c55e"/><circle cx="220" cy="22" r="3.5" fill="#22c55e"/></svg><div class="mk-slabels"><span>S1</span><span>S2</span><span>S3</span><span>S4</span></div></div>
+                <div class="mk-cats"><div class="mk-cat"><span class="mk-cdot" style="background:#EA1D2C"></span>Alimentação<span class="mk-cval">R$ 655</span></div><div class="mk-cat"><span class="mk-cdot" style="background:#3b82f6"></span>Transporte<span class="mk-cval">R$ 480</span></div><div class="mk-cat"><span class="mk-cdot" style="background:#8b5cf6"></span>Lazer<span class="mk-cval">R$ 320</span></div><div class="mk-cat"><span class="mk-cdot" style="background:#f59e0b"></span>Outros<span class="mk-cval">R$ 885</span></div></div>
+              </div>
+              <div class="mk-panel" style="flex:1.4"><div class="mk-ptitle">Últimas transações <a>Ver todas →</a></div><div class="mk-txlist"><div class="mk-txrow"><div class="mk-txico" style="background:#EA1D2C;border-radius:7px"><img id="mk-ico-ifood" width="24" height="24" style="display:block;border-radius:6px;object-fit:cover"></div><div class="mk-txinfo"><div class="mk-txname">iFood — Delivery</div><div class="mk-txdate">Hoje · 12:34</div></div><div class="mk-txval neg">−R$ 42,00</div></div><div class="mk-txrow"><div class="mk-txico" style="background:#000;border-radius:7px"><img id="mk-ico-uber" width="24" height="24" style="display:block;border-radius:6px;object-fit:cover"></div><div class="mk-txinfo"><div class="mk-txname">Uber — Corrida</div><div class="mk-txdate">Hoje · 09:15</div></div><div class="mk-txval neg">−R$ 18,90</div></div><div class="mk-txrow"><div class="mk-txico" style="background:#1DB954;border-radius:7px"><img id="mk-ico-spotify" width="24" height="24" style="display:block;border-radius:6px;object-fit:cover"></div><div class="mk-txinfo"><div class="mk-txname">Spotify — Assinatura</div><div class="mk-txdate">Ontem · 08:00</div></div><div class="mk-txval neg">−R$ 22,00</div></div><div class="mk-txrow"><div class="mk-txico" style="background:#00873f;border-radius:7px"><img id="mk-ico-vr" width="24" height="24" style="display:block;border-radius:6px;object-fit:cover"></div><div class="mk-txinfo"><div class="mk-txname">VR — Vale Refeição</div><div class="mk-txdate">01 Jun · 08:00</div></div><div class="mk-txval pos">+R$ 600,00</div></div><div class="mk-txrow"><div class="mk-txico" style="background:#003B95;border-radius:7px"><img id="mk-ico-booking" width="24" height="24" style="display:block;border-radius:6px;object-fit:cover"></div><div class="mk-txinfo"><div class="mk-txname">Booking — Hotel</div><div class="mk-txdate">28 Mai · 15:22</div></div><div class="mk-txval neg">−R$ 120,00</div></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- mockup 1: Lançamentos -->
+        <div class="feat-mockup" data-mockup="1">
+          <div class="mk-bar"><div class="mk-bar-l"><div class="mk-logo">Z</div><span class="mk-brand">ZetaFin</span><div class="mk-divider"></div><span class="mk-page">Lançamentos</span></div><div class="mk-bar-r"><div class="mk-pill"><span class="mk-dot"></span>Junho 2025</div><div class="mk-av">LK</div></div></div>
+          <div class="mk-tabs"><div class="mk-tab">Dashboard</div><div class="mk-tab on">Lançamentos</div><div class="mk-tab">Metas</div><div class="mk-tab">Relatórios</div></div>
+          <div class="mk-toolbar"><div class="mk-srch"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Buscar lançamento...</div><div class="mk-fbtn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>Filtrar</div><div class="mk-addbtn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Novo</div></div>
+          <div class="mk-list"><div class="mk-list-grp"><div class="mk-list-date">Hoje — 14 Jun</div><div class="mk-list-row"><div class="mk-list-ico" style="background:#EA1D2C;border-radius:8px"><img id="mk-ico-ifood2" width="28" height="28" style="display:block;border-radius:7px;object-fit:cover"></div><div class="mk-list-info"><div class="mk-list-name">iFood — Delivery</div><div class="mk-list-cat">Alimentação · 12:34</div></div><div class="mk-list-val neg">−R$ 42,00</div></div><div class="mk-list-row"><div class="mk-list-ico" style="background:#000;border-radius:8px"><img id="mk-ico-uber2" width="28" height="28" style="display:block;border-radius:7px;object-fit:cover"></div><div class="mk-list-info"><div class="mk-list-name">Uber — Corrida</div><div class="mk-list-cat">Transporte · 09:15</div></div><div class="mk-list-val neg">−R$ 18,90</div></div></div><div class="mk-list-grp"><div class="mk-list-date">Ontem — 13 Jun</div><div class="mk-list-row"><div class="mk-list-ico" style="background:#1DB954;border-radius:8px"><img id="mk-ico-spotify2" width="28" height="28" style="display:block;border-radius:7px;object-fit:cover"></div><div class="mk-list-info"><div class="mk-list-name">Spotify</div><div class="mk-list-cat">Assinatura · 08:00</div></div><div class="mk-list-val neg">−R$ 22,00</div></div><div class="mk-list-row"><div class="mk-list-ico" style="background:#E50914;border-radius:8px"><img id="mk-ico-netflix2" width="28" height="28" style="display:block;border-radius:7px;object-fit:cover"></div><div class="mk-list-info"><div class="mk-list-name">Netflix</div><div class="mk-list-cat">Assinatura · 08:00</div></div><div class="mk-list-val neg">−R$ 44,90</div></div></div><div class="mk-list-grp"><div class="mk-list-date">01 Jun</div><div class="mk-list-row" style="background:rgba(34,197,94,.04);border:1px solid rgba(34,197,94,.1)"><div class="mk-list-ico" style="background:#00873f;border-radius:8px"><img id="mk-ico-vr2" width="28" height="28" style="display:block;border-radius:7px;object-fit:cover"></div><div class="mk-list-info"><div class="mk-list-name">VR — Vale Refeição</div><div class="mk-list-cat">Receita · 08:00</div></div><div class="mk-list-val pos">+R$ 600,00</div></div></div></div>
+        </div>
+
+        <!-- mockup 2: Metas -->
+        <div class="feat-mockup" data-mockup="2">
+          <div class="mk-bar"><div class="mk-bar-l"><div class="mk-logo">Z</div><span class="mk-brand">ZetaFin</span><div class="mk-divider"></div><span class="mk-page">Metas</span></div><div class="mk-bar-r"><div class="mk-pill"><span class="mk-dot"></span>3 ativas</div><div class="mk-av">LK</div></div></div>
+          <div class="mk-tabs"><div class="mk-tab">Dashboard</div><div class="mk-tab">Lançamentos</div><div class="mk-tab on">Metas</div><div class="mk-tab">Relatórios</div></div>
+          <div class="mk-goals">
+            <div class="mk-goal hi"><div class="mk-goal-head"><div><div class="mk-goal-name">✈️ Viagem para Europa</div><div class="mk-goal-sub">Prazo: dezembro de 2025</div></div><div class="mk-goal-pct" style="color:#22c55e">68%</div></div><div class="mk-track"><div style="width:68%;height:100%;border-radius:100px;background:#22c55e"></div></div><div class="mk-goal-footer"><span>R$ 6.800 guardados</span><span>Falta <strong>R$ 3.200</strong></span></div></div>
+            <div class="mk-goal"><div class="mk-goal-head"><div><div class="mk-goal-name">🚗 Trocar de carro</div><div class="mk-goal-sub">Prazo: sem prazo</div></div><div class="mk-goal-pct" style="color:rgba(255,255,255,.6)">31%</div></div><div class="mk-track"><div style="width:31%;height:100%;border-radius:100px;background:rgba(255,255,255,.25)"></div></div><div class="mk-goal-footer"><span>R$ 9.300 guardados</span><span>Falta <strong>R$ 20.700</strong></span></div></div>
+            <div class="mk-goal"><div class="mk-goal-head"><div><div class="mk-goal-name">🏥 Reserva de emergência</div><div class="mk-goal-sub">Prazo: março de 2026</div></div><div class="mk-goal-pct" style="color:#f59e0b">52%</div></div><div class="mk-track"><div style="width:52%;height:100%;border-radius:100px;background:#f59e0b"></div></div><div class="mk-goal-footer"><span>R$ 7.800 guardados</span><span>Falta <strong>R$ 7.200</strong></span></div></div>
+            <div class="mk-add-goal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Nova meta</div>
+          </div>
+        </div>
+
+        <!-- mockup 3: Score -->
+        <div class="feat-mockup" data-mockup="3">
+          <div class="mk-bar"><div class="mk-bar-l"><div class="mk-logo">Z</div><span class="mk-brand">ZetaFin</span><div class="mk-divider"></div><span class="mk-page">Score & Relatórios</span></div><div class="mk-bar-r"><div class="mk-av">LK</div></div></div>
+          <div class="mk-tabs"><div class="mk-tab">Dashboard</div><div class="mk-tab">Lançamentos</div><div class="mk-tab">Metas</div><div class="mk-tab on">Relatórios</div></div>
+          <div class="mk-score-area">
+            <div class="mk-score-hero"><div class="mk-score-circle"><span class="mk-score-val">72</span></div><div><div class="mk-score-grade">B+</div><div class="mk-score-change">↑ subiu 1 nível este mês</div><div class="mk-score-desc">Você está no caminho certo. Reduza assinaturas não usadas para subir para A.</div></div></div>
+            <div class="mk-insight-title">Insights do mês</div>
+            <div class="mk-insights">
+              <div class="mk-insight"><div class="mk-insight-ico" style="background:rgba(251,113,133,.1);border-radius:8px">⚠️</div><div class="mk-insight-text"><strong>Alimentação subiu 18%</strong> em relação ao mês passado. Você gastou R$ 655 — acima da sua média de R$ 555.</div></div>
+              <div class="mk-insight"><div class="mk-insight-ico" style="background:rgba(34,197,94,.1);border-radius:8px">✅</div><div class="mk-insight-text"><strong>Transporte caiu 12%</strong> — ótima notícia! Você economizou R$ 66 este mês.</div></div>
+              <div class="mk-insight"><div class="mk-insight-ico" style="background:rgba(251,191,36,.1);border-radius:8px">💡</div><div class="mk-insight-text">Você tem <strong>4 assinaturas ativas</strong> totalizando R$ 128,90/mês. Vale revisar.</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /feat-mockup-wrap -->
+    </div><!-- /feat-right -->
+
+  </div><!-- /feat-wrap -->
+</section>
+<script>
+const SLIDE_LABELS = ['Visão geral','Lançamentos','Metas','Score & Relatórios'];
+let currentSlide = 0;
+
+function goSlide(idx){
+  if(idx === currentSlide) return;
+  const prev = currentSlide;
+  currentSlide = idx;
+
+  // ── texto esquerdo: fade out old, fade in new ──
+  const panels = document.querySelectorAll('.feat-content-panel');
+  panels.forEach(p => {
+    const i = parseInt(p.dataset.panel);
+    if(i === prev){
+      p.style.transition = 'opacity .15s ease';
+      p.style.opacity = '0';
+      setTimeout(()=>{ p.classList.remove('active'); p.style.opacity=''; p.style.transition=''; }, 150);
+    }
+    if(i === idx){
+      setTimeout(()=>{ p.classList.add('active'); }, 160);
+    }
+  });
+
+  // ── mockup direito: exit old, enter new ──
+  const mockups = document.querySelectorAll('.feat-mockup');
+  mockups.forEach(m => {
+    const i = parseInt(m.dataset.mockup);
+    if(i === prev){
+      m.classList.add('exit');
+      setTimeout(()=>{ m.classList.remove('active','exit'); }, 200);
+    }
+    if(i === idx){
+      setTimeout(()=>{ m.classList.add('active'); }, 160);
+    }
+  });
+
+  // ── dots + step dots + label ──
+  document.querySelectorAll('.feat-dot, .feat-step-dot').forEach(d=>{
+    d.classList.toggle('on', parseInt(d.dataset.i)===idx);
+  });
+  const lbl = document.getElementById('feat-step-label');
+  if(lbl) lbl.textContent = SLIDE_LABELS[idx];
+}
+
+// prev/next buttons
+document.getElementById('feat-prev').addEventListener('click', ()=>{
+  goSlide((currentSlide + 3) % 4);
+});
+document.getElementById('feat-next').addEventListener('click', ()=>{
+  goSlide((currentSlide + 1) % 4);
+});
+</script>
+
+<!-- ═══════════ PIERRE 1: Surpresas na fatura ═══════════ -->
+<section class="pr rv" style="background:#0a0a0a">
+  <div class="pr-text">
+    <h2 class="pr-h">Surpresas na<br>fatura? Comigo, não</h2>
+    <p class="pr-p">Eu sei como é abrir a fatura e não entender nada. Por isso eu organizo tudo pra você não ter surpresa.</p>
+    <a href="#" class="pr-btn">Categorizar gastos</a>
+  </div>
+  <div class="pr-vis">
+    <div class="pr-photo">
+      <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80&fit=crop&crop=top" alt="Pessoa verificando gastos">
+    </div>
+    <div class="pr-ui left">
+      <div class="ui-cat">
+        <div class="ui-head">Gastos por categoria · Janeiro</div>
+        <div class="ui-total">R$ 2.340,00</div>
+        <div class="ui-bar-row">
+          <div class="ui-seg" style="background:#EA1D2C;flex:2.8"></div>
+          <div class="ui-seg" style="background:#003B95;flex:2.5"></div>
+          <div class="ui-seg" style="background:#000;flex:4.7"></div>
+        </div>
+        <div class="ui-row">
+          <div class="ui-ico" style="background:#EA1D2C;overflow:hidden"><img id="ico-ifood-1" width="28" height="28" style="object-fit:cover;border-radius:7px"></div>
+          <div class="ui-name">Alimentação</div><div class="ui-pct">28%</div><div class="ui-val">R$ 655</div>
+        </div>
+        <div class="ui-row">
+          <div class="ui-ico" style="background:#003B95;overflow:hidden"><img id="ico-decolar-1" width="28" height="28" style="object-fit:cover;border-radius:7px"></div>
+          <div class="ui-name">Viagens</div><div class="ui-pct">25%</div><div class="ui-val">R$ 585</div>
+        </div>
+        <div class="ui-row">
+          <div class="ui-ico" style="background:#000;overflow:hidden"><img id="ico-uber-1" width="28" height="28" style="object-fit:cover;border-radius:7px"></div>
+          <div class="ui-name">Transporte</div><div class="ui-pct">47%</div><div class="ui-val">R$ 1.100</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PIERRE 2: Próximo mês ═══════════ -->
+<section class="pr rev rv" style="background:#0d0d0d">
+  <div class="pr-text">
+    <h2 class="pr-h">Entenda o que pesa<br>no próximo mês</h2>
+    <p class="pr-p">Saiba exatamente o que vai sair da sua conta: assinaturas, boletos e parcelas.</p>
+    <a href="#" class="pr-btn">Planejar finanças</a>
+  </div>
+  <div class="pr-vis">
+    <div class="pr-photo">
+      <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&q=80&fit=crop&crop=top" alt="Profissional planejando">
+    </div>
+    <div class="pr-ui right">
+      <div class="ui-subs">
+        <div class="ui-head">Assinaturas · próximo mês</div>
+        <div class="sub-grid">
+          <div class="sub-c">
+            <div class="sub-ico" style="background:#1DB954;overflow:hidden">
+              <img id="ico-spotify-1" width="42" height="42" style="object-fit:cover;border-radius:12px">
+            </div>
+            <div class="sub-name">Spotify</div><div class="sub-val">R$ 22</div><div class="sub-days">Em 12 dias</div>
+          </div>
+          <div class="sub-c">
+            <div class="sub-ico" style="background:#E50914;overflow:hidden">
+              <img id="ico-netflix-1" width="42" height="42" style="object-fit:cover;border-radius:12px">
+            </div>
+            <div class="sub-name">Netflix</div><div class="sub-val">R$ 32</div><div class="sub-days">Em 22 dias</div>
+          </div>
+          <div class="sub-c">
+            <div class="sub-ico" style="background:#FF9900;overflow:hidden">
+              <img id="ico-amazon-1" width="42" height="42" style="object-fit:cover;border-radius:12px">
+            </div>
+            <div class="sub-name">Amazon</div><div class="sub-val">R$ 17</div><div class="sub-days">Em 20 dias</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PIERRE 3: Metas ═══════════ -->
+<section class="pr rv" style="background:#0a0a0a">
+  <div class="pr-text">
+    <h2 class="pr-h">Defina objetivos,<br><span class="g">conquiste metas</span></h2>
+    <p class="pr-p">Viagem, reserva de emergência, quitação de dívida — crie metas com prazo real e acompanhe o progresso visualmente.</p>
+    <a href="#" class="pr-btn">Criar minha meta</a>
+  </div>
+  <div class="pr-vis">
+    <div class="pr-photo">
+      <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80&fit=crop&crop=top" alt="Profissional com smartphone">
+    </div>
+    <div class="pr-ui left">
+      <div class="ui-metas">
+        <div class="ui-head">Minhas metas</div>
+        <div class="meta-row">
+          <div class="meta-top"><span class="meta-name">✈ Viagem para Europa</span><span class="meta-pct" style="color:var(--g)">62%</span></div>
+          <div class="meta-bar"><div class="meta-fill" style="width:62%;background:var(--g)"></div></div>
+          <div class="meta-bot"><span>R$ 930 / R$ 1.500</span><span>Jul 2025</span></div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-top"><span class="meta-name">🛡 Reserva emergência</span><span class="meta-pct" style="color:var(--g)">35%</span></div>
+          <div class="meta-bar"><div class="meta-fill" style="width:35%;background:var(--g)"></div></div>
+          <div class="meta-bot"><span>R$ 4.200 / R$ 12.000</span><span>Dez 2025</span></div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-top"><span class="meta-name">💳 Quitar dívida</span><span class="meta-pct" style="color:#fb7185">18%</span></div>
+          <div class="meta-bar"><div class="meta-fill" style="width:18%;background:#fb7185"></div></div>
+          <div class="meta-bot"><span>R$ 900 / R$ 5.000</span><span>Mar 2026</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PRICING ═══════════ -->
+<section class="pricing" id="planos" style="background:#0d0d0d;border-top:1px solid rgba(255,255,255,.06)">
+  <div class="rv sc">
+    <div class="sec-tag">Planos e preços</div>
+    <h2 class="sec-h2">Simples e <span class="g">sem surpresas</span></h2>
+    <p class="sec-p" style="margin:12px auto 0">Comece por R$&nbsp;9,99 e escale conforme suas necessidades.</p>
+  </div>
+  <div class="bill-tog">
+    <button class="tb on" id="bM" onclick="setB('m')">Mensal</button>
+    <button class="tb" id="bA" onclick="setB('a')">Anual <span class="db">−19%</span></button>
+  </div>
+  <div class="plans">
+
+    <!-- Starter -->
+    <div class="pc rv">
+      <div class="pt-spacer"></div>
+      <div class="pt">Starter</div>
+      <div class="pp">
+        <span class="pp-cur">R$</span>
+        <span class="pp-val" id="p1V">9</span>
+        <span class="pp-cent" id="p1C">,99</span>
+      </div>
+      <div class="pper" id="p1P">/mês · cobrado mensalmente</div>
+      <div class="ptag">Para quem quer começar a ter controle real das finanças pessoais.</div>
+      <div class="psep"></div>
+      <ul class="pfl">
+        <li><span class="pck">✓</span>Lançamentos ilimitados</li>
+        <li><span class="pck">✓</span>Dashboard com saldo em tempo real</li>
+        <li><span class="pck">✓</span>Categorias automáticas</li>
+        <li><span class="pck">✓</span>Histórico completo de 6 meses</li>
+        <li><span class="pck">✓</span>Autenticação com Google</li>
+        <li><span class="pck">✓</span>Alertas de limite diário</li>
+      </ul>
+      <button class="pbtn">Começar agora</button>
+    </div>
+
+    <!-- Pro — destaque -->
+    <div class="pc feat rv">
+      <div class="ppop">Mais popular</div>
+      <div class="pt">Pro</div>
+      <div class="pp">
+        <span class="pp-cur">R$</span>
+        <span class="pp-val" id="p2V">19</span>
+        <span class="pp-cent" id="p2C">,90</span>
+      </div>
+      <div class="pper" id="p2P">/mês · cobrado mensalmente</div>
+      <div class="ptag">Controle avançado com metas, dívidas, alertas e relatórios completos.</div>
+      <div class="psep"></div>
+      <ul class="pfl">
+        <li><span class="pck">✓</span>Tudo do Starter</li>
+        <li><span class="pck">✓</span>Metas financeiras com prazo</li>
+        <li><span class="pck">✓</span>Controle de dívidas e parcelas</li>
+        <li><span class="pck">✓</span>Score financeiro personalizado</li>
+        <li><span class="pck">✓</span>Relatórios mensais em PDF</li>
+        <li><span class="pck">✓</span>Exportação CSV</li>
+        <li><span class="pck">✓</span>Suporte prioritário</li>
+      </ul>
+      <button class="pbtn">Assinar Pro</button>
+    </div>
+
+    <!-- Família -->
+    <div class="pc rv">
+      <div class="pt-spacer"></div>
+      <div class="pt">Família</div>
+      <div class="pp">
+        <span class="pp-cur">R$</span>
+        <span class="pp-val" id="p3V">34</span>
+        <span class="pp-cent" id="p3C">,90</span>
+      </div>
+      <div class="pper" id="p3P">/mês · cobrado mensalmente</div>
+      <div class="ptag">Até 4 contas independentes com dashboard familiar compartilhado.</div>
+      <div class="psep"></div>
+      <ul class="pfl">
+        <li><span class="pck">✓</span>Tudo do Pro</li>
+        <li><span class="pck">✓</span>4 contas independentes</li>
+        <li><span class="pck">✓</span>Dashboard familiar unificado</li>
+        <li><span class="pck">✓</span>Metas compartilhadas</li>
+        <li><span class="pck">✓</span>Relatórios consolidados</li>
+      </ul>
+      <button class="pbtn">Assinar Família</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ TESTIMONIALS ═══════════ -->
+<section class="sec" id="dep" style="padding:88px 6%">
+  <div class="rv sc">
+    <div class="sec-tag">Depoimentos</div>
+    <h2 class="sec-h2">O que as pessoas <span class="g">estão dizendo</span></h2>
+  </div>
+  <div class="tg">
+    <div class="tc rv">
+      <div class="tc-stars">★★★★★</div>
+      <div class="tc-text">"Nunca consegui manter um controle financeiro antes do ZetaFin. O dashboard é tão visual que até minha esposa começou a usar!"</div>
+      <div class="tc-author"><div class="tc-av"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80&fit=crop&crop=face" alt=""></div><div><div class="tc-name">Marcos Ribeiro</div><div class="tc-role">Analista de TI · Curitiba</div></div></div>
+    </div>
+    <div class="tc rv">
+      <div class="tc-stars">★★★★★</div>
+      <div class="tc-text">"O alerta de limite diário mudou meu jeito de gastar. Em 3 meses já economizei o suficiente para a viagem que planejava há anos."</div>
+      <div class="tc-author"><div class="tc-av"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80&fit=crop&crop=face" alt=""></div><div><div class="tc-name">Juliana Lima</div><div class="tc-role">Professora · São Paulo</div></div></div>
+    </div>
+    <div class="tc rv">
+      <div class="tc-stars">★★★★☆</div>
+      <div class="tc-text">"Interface limpa e rápida. Finalmente um app de finanças que não me deixa perdido com dezenas de menus. Simples e direto."</div>
+      <div class="tc-author"><div class="tc-av"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80&fit=crop&crop=face" alt=""></div><div><div class="tc-name">Felipe Costa</div><div class="tc-role">Dev · Florianópolis</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FAQ ═══════════ -->
+<section class="sec" id="faq" style="padding:88px 6% 80px">
+  <div class="rv sc">
+    <h2 class="sec-h2" style="font-size:clamp(2.2rem,4.5vw,3.6rem);letter-spacing:-2px;font-weight:900">Perguntas Frequentes</h2>
+    <p class="sec-p" style="margin:12px auto 0">Tire suas dúvidas sobre o ZetaFin e como ele pode ajudar suas finanças.</p>
+  </div>
+  <div class="faq-list rv">
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span>O ZetaFin é seguro?</span><span class="faq-ico-wrap"><svg class="faq-ico" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button><div class="faq-a">Sim. Todos os dados são armazenados no Firebase com criptografia AES-256 — o mesmo padrão dos maiores bancos digitais do Brasil. Cada usuário só tem acesso aos próprios dados, garantido pelas regras do Firestore.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span>Como funciona o limite diário inteligente?</span><span class="faq-ico-wrap"><svg class="faq-ico" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button><div class="faq-a">Ao cadastrar seu salário, o ZetaFin calcula automaticamente quanto você pode gastar por dia sem comprometer suas metas. A fórmula considera: (salário − gastos fixos) ÷ dias restantes do mês.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span>Posso cancelar minha assinatura a qualquer momento?</span><span class="faq-ico-wrap"><svg class="faq-ico" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button><div class="faq-a">Sim, sem burocracia. Cancele quando quiser pelas configurações da conta. Você continua com acesso Pro até o fim do período pago, sem cobranças adicionais.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span>O ZetaFin consegue movimentar meu dinheiro?</span><span class="faq-ico-wrap"><svg class="faq-ico" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button><div class="faq-a">Não. O ZetaFin é somente leitura e não tem acesso às suas contas bancárias. Tudo que você registra é feito manualmente por você. Seus dados ficam isolados e protegidos no seu perfil.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span>Como funcionam os alertas inteligentes?</span><span class="faq-ico-wrap"><svg class="faq-ico" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button><div class="faq-a">O sistema monitora seus lançamentos em tempo real e te avisa quando você está se aproximando do limite diário, quando uma meta está em risco ou quando o ritmo de gastos vai comprometer o saldo projetado.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span>Qual a diferença entre os planos?</span><span class="faq-ico-wrap"><svg class="faq-ico" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button><div class="faq-a">O Starter cobre o essencial para começar. O Pro adiciona metas, dívidas, alertas, exportação e score financeiro. O Família permite até 4 contas independentes com dashboard compartilhado.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)"><span>O ZetaFin funciona no celular?</span><span class="faq-ico-wrap"><svg class="faq-ico" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button><div class="faq-a">Sim. O ZetaFin é uma Progressive Web App (PWA) e funciona em qualquer browser moderno no celular ou desktop. Em breve teremos também o aplicativo nativo para iOS e Android.</div></div>
+  </div>
+</section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="cta">
+  <div class="rv">
+    <h2 class="cta-h">Comece hoje a <span class="g">controlar</span><br>seu dinheiro</h2>
+    <p class="cta-p">Sem burocracia, sem complicação.<br>Configure em menos de 5 minutos.</p>
+    <div class="cta-form">
+      <input type="email" class="ci" placeholder="Seu melhor e-mail">
+      <a href="#" class="bw" style="white-space:nowrap;padding:14px 28px" onclick="openModal('register');return false;">Criar conta →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="fg">
+    <div>
+      <a href="#" class="nl" style="text-decoration:none"><div class="lb">Z</div>ZetaFin</a>
+      <p class="fbd">Controle financeiro pessoal inteligente — rápido e direto ao ponto. Desenvolvido com no Brasil.</p>
+    </div>
+    <div><div class="fct">Produto</div><ul class="fl"><li><a href="#">Funcionalidades</a></li><li><a href="#">Planos</a></li><li><a href="#">Roadmap</a></li><li><a href="#">Changelog</a></li></ul></div>
+    <div><div class="fct">Suporte</div><ul class="fl"><li><a href="#">Central de ajuda</a></li><li><a href="#">Documentação</a></li><li><a href="#">Contato</a></li><li><a href="https://github.com/LucasLikes/ZetaFin" target="_blank">GitHub</a></li></ul></div>
+    <div><div class="fct">Legal</div><ul class="fl"><li><a href="#">Termos de uso</a></li><li><a href="#">Privacidade</a></li><li><a href="#">Segurança</a></li><li><a href="#">LGPD</a></li></ul></div>
+  </div>
+  <div class="fb">
+    <span>© 2026 ZetaFin. Todos os direitos reservados.</span>
+  </div>
+</footer>
+
+<!-- ═══════════ MODAL AUTH ═══════════ -->
+<style>
+/* ── overlay ── */
+.auth-overlay{
+  position:fixed;inset:0;z-index:900;
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;
+  opacity:0;pointer-events:none;
+  transition:opacity .32s ease;
+}
+.auth-overlay.open{opacity:1;pointer-events:all}
+.auth-backdrop{
+  position:absolute;inset:0;
+  background:rgba(4,4,4,.75);
+  backdrop-filter:blur(18px) saturate(1.2);
+  -webkit-backdrop-filter:blur(18px) saturate(1.2);
+}
+
+/* ── card ── */
+.auth-card{
+  position:relative;z-index:1;
+  width:100%;max-width:420px;
+  background:#0f0f0f;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 40px 120px rgba(0,0,0,.8),0 0 0 1px rgba(34,197,94,.07);
+  transform:translateY(28px) scale(.97);
+  transition:transform .38s cubic-bezier(.34,1.28,.64,1), opacity .32s ease;
+  opacity:0;
+  max-height:calc(100vh - 32px);
+  display:flex;flex-direction:column;
+}
+.auth-overlay.open .auth-card{transform:translateY(0) scale(1);opacity:1}
+
+/* topo decorativo */
+.auth-card-glow{
+  position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+  width:280px;height:160px;
+  background:radial-gradient(ellipse,rgba(34,197,94,.12) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── slider interno ── */
+.auth-slider{
+  display:flex;
+  transition:transform .42s cubic-bezier(.77,0,.18,1);
+  width:200%;
+  flex:1;min-height:0;
+}
+.auth-slider.on-register{transform:translateX(-50%)}
+
+.auth-panel{
+  width:50%;padding:32px 32px 28px;
+  flex-shrink:0;
+  overflow-y:auto;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.auth-panel::-webkit-scrollbar{display:none}
+
+/* ── header ── */
+.auth-logo{display:flex;align-items:center;gap:9px;margin-bottom:24px}
+.auth-logo-box{width:34px;height:34px;background:#22c55e;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:#000;flex-shrink:0}
+.auth-logo-name{font-size:1.05rem;font-weight:800;color:#fff}
+.auth-h{font-size:1.5rem;font-weight:800;letter-spacing:-.7px;color:#fff;margin-bottom:6px;line-height:1.15}
+.auth-sub{font-size:.86rem;color:rgba(255,255,255,.42);line-height:1.5;margin-bottom:24px}
+
+/* ── form fields ── */
+.auth-field{margin-bottom:13px}
+.auth-label{display:block;font-size:.74rem;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:6px;letter-spacing:.3px}
+.auth-input-wrap{position:relative;display:flex;align-items:stretch}
+/* left icon */
+.auth-input-wrap > svg:first-child{
+  position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  color:rgba(255,255,255,.22);pointer-events:none;flex-shrink:0;z-index:1;
+}
+.auth-input{
+  width:100%;padding:13px 13px 13px 38px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:11px;
+  color:#fff;font-family:inherit;font-size:.9rem;
+  outline:none;transition:border-color .2s,background .2s;
+  -webkit-appearance:none;
+}
+/* password input: more right padding for eye */
+.auth-input.has-eye{padding-right:44px}
+.auth-input::placeholder{color:rgba(255,255,255,.22)}
+.auth-input:focus{border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.04)}
+.auth-input.err{border-color:rgba(251,113,133,.5);background:rgba(251,113,133,.04)}
+
+/* eye button — sits inside the input, flush right */
+.auth-eye{
+  position:absolute;right:0;top:0;bottom:0;
+  width:42px;
+  background:none;border:none;border-radius:0 11px 11px 0;
+  color:rgba(255,255,255,.28);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:color .2s;
+  z-index:2;
+}
+.auth-eye:hover{color:rgba(255,255,255,.65)}
+
+/* forgot */
+.auth-forgot{text-align:right;margin-top:-6px;margin-bottom:14px}
+.auth-forgot a{font-size:.76rem;color:rgba(255,255,255,.3);text-decoration:none;transition:color .2s}
+.auth-forgot a:hover{color:#22c55e}
+
+/* ── checkbox termos ── */
+.auth-check-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px}
+.auth-check-box{
+  width:18px;height:18px;border-radius:5px;
+  border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04);
+  flex-shrink:0;margin-top:1px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.auth-check-box.checked{background:#22c55e;border-color:#22c55e}
+.auth-check-box.checked::after{content:'✓';font-size:.65rem;font-weight:900;color:#000}
+.auth-check-label{font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.5;cursor:pointer}
+.auth-check-label a{color:#22c55e;text-decoration:none}
+
+/* ── submit button ── */
+.auth-btn{
+  width:100%;padding:14px;
+  background:#22c55e;color:#000;
+  border:none;border-radius:12px;
+  font-family:inherit;font-size:.95rem;font-weight:800;
+  cursor:pointer;letter-spacing:-.1px;
+  transition:background .2s,transform .15s;
+  position:relative;overflow:hidden;
+}
+.auth-btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.12),transparent);
+  transform:translateX(-100%);
+  transition:transform .5s ease;
+}
+.auth-btn:hover{background:#16a34a;transform:translateY(-1px)}
+.auth-btn:hover::after{transform:translateX(100%)}
+.auth-btn:active{transform:translateY(0)}
+
+/* ── divider ── */
+.auth-divider{display:flex;align-items:center;gap:10px;margin:18px 0}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
+.auth-divider span{font-size:.72rem;color:rgba(255,255,255,.22)}
+
+/* ── social button ── */
+.auth-social{
+  width:100%;padding:12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;color:#fff;
+  font-family:inherit;font-size:.88rem;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:all .2s;
+}
+.auth-social:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.2)}
+
+/* ── switch link ── */
+.auth-switch{text-align:center;margin-top:22px;font-size:.82rem;color:rgba(255,255,255,.3)}
+.auth-switch a{color:#22c55e;font-weight:700;text-decoration:none;cursor:pointer;transition:color .2s}
+.auth-switch a:hover{color:#4ade80}
+
+/* ── close button ── */
+.auth-close{
+  position:absolute;top:18px;right:18px;z-index:10;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;
+}
+.auth-close:hover{background:rgba(255,255,255,.12);color:#fff}
+
+/* ── signup hint ── */
+.auth-signup-hint{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:20px;padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.07);
+  font-size:.83rem;color:rgba(255,255,255,.35);
+}
+.auth-signup-link{
+  display:inline-flex;align-items:center;gap:4px;
+  color:#22c55e;font-weight:700;cursor:pointer;text-decoration:none;
+  transition:gap .2s,color .2s;
+}
+.auth-signup-link:hover{color:#4ade80;gap:7px}
+.auth-signup-link svg{transition:transform .2s}
+.auth-signup-link:hover svg{transform:translateX(2px)}
+
+/* register panel scroll */
+.auth-panel-reg{overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none}
+.auth-panel-reg::-webkit-scrollbar{display:none}
+
+/* success state */
+.auth-success{
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:48px 32px;text-align:center;
+}
+.auth-success.show{display:flex}
+.auth-success-icon{
+  width:68px;height:68px;border-radius:50%;
+  background:rgba(34,197,94,.12);border:2px solid rgba(34,197,94,.3);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:18px;
+  animation:popIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.auth-success h3{font-size:1.35rem;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:8px}
+.auth-success p{font-size:.86rem;color:rgba(255,255,255,.45);line-height:1.65;max-width:250px}
+
+/* ── responsive ── */
+@media(max-width:480px){
+  .auth-overlay{padding:0}
+  .auth-card{
+    max-width:100%;border-radius:0;
+    min-height:100svh;max-height:100svh;
+    border:none;
+  }
+  .auth-panel{padding:28px 20px 24px}
+  .auth-h{font-size:1.3rem}
+}
+</style>
+
+<!-- ══ POPUP "ESTAMOS EM CRIAÇÃO" ══ -->
+<style>
+#wip-overlay{
+  position:fixed;inset:0;z-index:999;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  background:rgba(0,0,0,0);
+  backdrop-filter:blur(0px);
+  pointer-events:none;
+  transition:background .3s ease, backdrop-filter .3s ease;
+}
+#wip-overlay.open{
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(8px);
+  pointer-events:all;
+}
+#wip-card{
+  position:relative;
+  width:100%;max-width:440px;
+  background:#111;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:24px;
+  padding:44px 36px 36px;
+  text-align:center;
+  box-shadow:0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(34,197,94,.06);
+  transform:translateY(20px) scale(.96);
+  opacity:0;
+  transition:transform .35s cubic-bezier(.34,1.3,.64,1), opacity .28s ease;
+  overflow:hidden;
+}
+#wip-overlay.open #wip-card{
+  transform:translateY(0) scale(1);
+  opacity:1;
+}
+/* faixinha verde no topo */
+#wip-card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,#22c55e,transparent);
+  opacity:.8;
+}
+/* glow sutil */
+#wip-card::after{
+  content:'';
+  position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+  width:300px;height:120px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(34,197,94,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.wip-close{
+  position:absolute;top:16px;right:16px;
+  width:28px;height:28px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:rgba(255,255,255,.4);
+  transition:all .2s;
+}
+.wip-close:hover{background:rgba(255,255,255,.1);color:#fff}
+.wip-icon{
+  width:72px;height:72px;border-radius:20px;
+  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 22px;
+  font-size:2rem;
+  animation:wipPulse 3s ease-in-out infinite;
+}
+@keyframes wipPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.0)}
+  50%{box-shadow:0 0 0 10px rgba(34,197,94,.06)}
+}
+.wip-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.22);
+  color:#22c55e;font-size:.65rem;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;padding:4px 12px;border-radius:100px;
+  margin-bottom:14px;
+}
+.wip-badge-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:#22c55e;
+  animation:blink 2s infinite;
+}
+.wip-title{
+  font-size:1.55rem;font-weight:800;letter-spacing:-.6px;
+  color:#fff;margin-bottom:10px;line-height:1.15;
+}
+.wip-title span{color:#22c55e}
+.wip-desc{
+  font-size:.88rem;color:rgba(255,255,255,.46);
+  line-height:1.7;margin-bottom:28px;
+  max-width:320px;margin-left:auto;margin-right:auto;
+}
+.wip-divider{
+  height:1px;background:rgba(255,255,255,.07);
+  margin:24px 0;
+}
+.wip-notify-label{
+  font-size:.72rem;color:rgba(255,255,255,.35);
+  text-transform:uppercase;letter-spacing:1px;font-weight:600;
+  margin-bottom:10px;
+}
+.wip-input-row{
+  display:flex;gap:8px;
+}
+.wip-email-input{
+  flex:1;padding:11px 14px;border-radius:10px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  color:#fff;font-size:.84rem;font-family:inherit;
+  outline:none;transition:border-color .2s;
+}
+.wip-email-input::placeholder{color:rgba(255,255,255,.25)}
+.wip-email-input:focus{border-color:rgba(34,197,94,.4)}
+.wip-notify-btn{
+  padding:11px 18px;border-radius:10px;border:none;
+  background:#22c55e;color:#071a0e;
+  font-family:inherit;font-size:.84rem;font-weight:700;
+  cursor:pointer;white-space:nowrap;transition:background .2s;
+  flex-shrink:0;
+}
+.wip-notify-btn:hover{background:#1daf51}
+.wip-notify-ok{
+  display:none;
+  align-items:center;justify-content:center;gap:8px;
+  font-size:.84rem;color:#22c55e;font-weight:600;
+  padding:10px;
+}
+.wip-footer{
+  margin-top:20px;font-size:.72rem;color:rgba(255,255,255,.2);
+}
+</style>
+
+<div id="wip-overlay" onclick="handleOverlayClick(event)">
+  <div id="wip-card">
+    <button class="wip-close" onclick="closeModal()" aria-label="Fechar">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <div class="wip-icon">🚧</div>
+
+    <div class="wip-badge">
+      <span class="wip-badge-dot"></span>
+      Em desenvolvimento
+    </div>
+
+    <h2 class="wip-title">Estamos em<br><span>Criação</span> 🌱</h2>
+    <p class="wip-desc">
+      Nossa plataforma está sendo construída com muito cuidado.
+      Em breve você poderá acessar o ZetaFin e transformar
+      sua vida financeira.
+    </p>
+
+    <div class="wip-divider"></div>
+    <div class="wip-notify-label">Avise-me quando lançar</div>
+
+    <div class="wip-input-row" id="wip-form-row">
+      <input
+        class="wip-email-input"
+        type="email"
+        placeholder="seu@email.com"
+        id="wip-email"
+      />
+      <button class="wip-notify-btn" onclick="handleWipNotify()">Quero ser avisado</button>
+    </div>
+    <div class="wip-notify-ok" id="wip-ok">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      E-mail registrado! Te avisamos em breve 🎉
+    </div>
+
+    <div class="wip-footer">ZetaFin · Controle financeiro inteligente</div>
+  </div>
+</div>
+
+<script>
+function handleWipNotify(){
+  const input = document.getElementById('wip-email');
+  const email = input.value.trim();
+  if(!email || !email.includes('@')){ input.style.borderColor='rgba(251,113,133,.5)'; input.focus(); return; }
+  document.getElementById('wip-form-row').style.display = 'none';
+  const ok = document.getElementById('wip-ok');
+  ok.style.display = 'flex';
+  setTimeout(()=>{ closeModal(); }, 2800);
+}
+</script>
+
+<script>
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')}),{threshold:.1});
+
+// Injetar logos reais nos <img> elements
+window.addEventListener('DOMContentLoaded', () => {
+  const assign = (id, logo) => { const el = document.getElementById(id); if(el && logo) el.src = logo; };
+  // mockup dashboard icons
+  assign('mk-ico-ifood',   LOGO_IFOOD);
+  assign('mk-ico-uber',    LOGO_UBER);
+  assign('mk-ico-spotify', LOGO_SPOTIFY);
+  assign('mk-ico-vr',      LOGO_VR);
+  assign('mk-ico-booking', LOGO_BOOKING);
+  // mockup lançamentos icons
+  assign('mk-ico-ifood2',   LOGO_IFOOD);
+  assign('mk-ico-uber2',    LOGO_UBER);
+  assign('mk-ico-spotify2', LOGO_SPOTIFY);
+  assign('mk-ico-netflix2', LOGO_NETFLIX);
+  assign('mk-ico-vr2',      LOGO_VR);
+  assign('ico-ifood-h', LOGO_IFOOD);
+  assign('ico-booking-h', LOGO_BOOKING);
+  assign('ico-uber-h', LOGO_UBER);
+  assign('ico-vr-h', LOGO_VR);
+  // Pierre seção 1 - categorias
+  assign('ico-ifood-1', LOGO_IFOOD);
+  assign('ico-decolar-1', LOGO_DECOLAR);
+  assign('ico-uber-1', LOGO_UBER);
+  // Pierre seção 2 - assinaturas
+  assign('ico-spotify-1', LOGO_SPOTIFY);
+  assign('ico-netflix-1', LOGO_NETFLIX);
+  assign('ico-amazon-1', LOGO_AMAZON);});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+function setB(t){
+  const m=t==='m';
+  document.getElementById('bM').classList.toggle('on',m);
+  document.getElementById('bA').classList.toggle('on',!m);
+  // Starter
+  document.getElementById('p1V').textContent=m?'9':'7';
+  document.getElementById('p1C').textContent=m?',99':',99';
+  document.getElementById('p1P').textContent=m?'/mês · cobrado mensalmente':'/mês · cobrado anualmente';
+  // Pro
+  document.getElementById('p2V').textContent=m?'19':'15';
+  document.getElementById('p2C').textContent=m?',90':',90';
+  document.getElementById('p2P').textContent=m?'/mês · cobrado mensalmente':'/mês · cobrado anualmente';
+  // Família
+  document.getElementById('p3V').textContent=m?'34':'27';
+  document.getElementById('p3C').textContent=m?',90':',90';
+  document.getElementById('p3P').textContent=m?'/mês · cobrado mensalmente':'/mês · cobrado anualmente';
+}
+function faq(btn){const a=btn.nextElementSibling;const open=a.classList.contains('open');document.querySelectorAll('.faq-a.open').forEach(el=>{el.classList.remove('open');el.previousElementSibling.classList.remove('open')});if(!open){a.classList.add('open');btn.classList.add('open')}}
+
+/* ── MODAL "EM CRIAÇÃO" ── */
+function openModal(panel='login'){
+  const overlay = document.getElementById('wip-overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(){
+  const overlay = document.getElementById('wip-overlay');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e){
+  if(e.target === document.getElementById('wip-overlay')){
+    closeModal();
+  }
+}
+
+// close on ESC
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+</script>
+</body>
+</html>
